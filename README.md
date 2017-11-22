@@ -213,6 +213,38 @@ await Save.save(conn, {
 例子6 多条数据并发操作
 ```js
 ...
+await Save.saves(conn, [
+  {
+    data: RowDataModel.create({ id: 1, value: "11" }),
+    table: "tbl_test",
+    saveType: SaveType.insert,//插入
+    database: "test2"
+  },
+  {
+    data: RowDataModel.create({ id: 2, value: "22" }),
+    table: "tbl_test",
+    saveType: SaveType.update, //更新
+    database: "test2"
+  },
+  {
+    data: RowDataModel.create({ id: 3, value: "33" }),
+    table: "tbl_test",
+    saveType: SaveType.replace,//替换
+    database: "test2"
+  },
+  {
+    data: RowDataModel.create({ id: 4, value: "44" }),
+    table: "tbl_test",
+    saveType: SaveType.delete, //删除
+    database: "test2"
+  }
+]);
+...
+```
+
+例子7 多条数据顺序操作
+```js
+...
 await Save.savesSeq(conn, [
   {
     data: RowDataModel.create({ id: 1, value: "11" }),
@@ -242,11 +274,18 @@ await Save.savesSeq(conn, [
 ...
 ```
 
-例子7 事务操作
+例子8 事务操作
 ```js
+...
 try {
   await Transaction.begin(conn);
   await Save.saves(conn, [
+    {
+      data: RowDataModel.create({ id: 1, value: "1" }),
+      table: "tbl_test",
+      saveType: SaveType.insert,
+      database: "test2"
+    },
     {
       data: RowDataModel.create({ id: 2, value: "2" }),
       table: "tbl_test",
@@ -270,10 +309,14 @@ try {
 } catch (err) {
   await Transaction.rollback(conn);
 }
+...
 ```
 
-例子8 查询
+例子9 查询
 ```js
+...
+const Select = mysqli.Select;
+...
 let result = await Select.select(conn, {
   sql: "select * from test2.tbl_test where id=?", //SQL语句
   where: ['1'] // 条件
@@ -282,7 +325,7 @@ console.log(result);
 
 result = await Select.selects(conn, [
   { sql: "select * from test2.tbl_test where id = ?", where: ['1'] },
-  { sql: "select * from test2.tbl_test where value like '%?%'", where: ['1'] }
+  { sql: "select * from test2.tbl_test where value like '%1%'" }
 ]);
 console.log(result);
 
@@ -290,17 +333,20 @@ result = await Select.selectSplitPage(conn, {
   sql: "select * from test2.tbl_test where id=?",
   where: [1], // 条件
   pageSize: 2,
-  index: 2,
+  index: 1,
 });
 console.log(result);
+...
 ```
 
-例子9 执行存储过程
+例子10 执行存储过程
 ```js
+...
 result = await Procedure.exec(conn, {
-  database: "test",
+  database: "test2",
   procedure: "p_insert2",
-  data: {par1: '1', par2: '2'}, // 参数
+  data: RowDataModel.create({par1: '1', par2: '2'}), // 参数
 });
 console.log(JSON.stringify(result));
+...
 ```
