@@ -1,26 +1,10 @@
 mysql-i
 =======
 
-
-
 [![NPM version][npm-image]][npm-url]
-[![Dependency Status][dep-image]][dep-url]
-[![devDependency Status][devdep-image]][devdep-url]
 [![NPM downloads][downloads-image]][npm-url]
-[![Build Status](https://travis-ci.org/heifade/mysql-i.svg?branch=master)](https://travis-ci.org/heifade/mysql-i)
-[![Coverage Status](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/github/heifade/mysql-i)
-
-
-
-[npm-image]: https://img.shields.io/npm/v/mysql-i.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/mysql-i
-[dep-image]: https://img.shields.io/david/heifade/mysql-i.svg?style=flat-square
-[dep-url]: https://david-dm.org/heifade/mysql-i
-[devdep-image]: http://img.shields.io/david/dev/heifade/mysql-i.svg?style=flat-square
-[devdep-url]: https://david-dm.org/heifade/mysql-i#info=devDependencies
-[downloads-image]: https://img.shields.io/npm/dm/mysql-i.svg
-
-
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
 
 # 安装
 ```bash
