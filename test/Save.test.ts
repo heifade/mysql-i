@@ -104,6 +104,16 @@ describe("Save", function() {
           data: RowDataModel.create({ id: 11, value: insertValue }),
           table: tableName,
           saveType: SaveType.insert
+        },
+        {
+          data: RowDataModel.create({ id: 111, value: insertValue }),
+          table: tableName,
+          saveType: SaveType.insert
+        },
+        {
+          data: RowDataModel.create({ id: 112, value: insertValue }),
+          table: tableName,
+          saveType: SaveType.insert
         }
       ]);
 
@@ -187,6 +197,16 @@ describe("Save", function() {
       await Save.savesSeq(conn, [
         {
           data: RowDataModel.create({ id: 12, value: insertValue }),
+          table: tableName,
+          saveType: SaveType.insert
+        },
+        {
+          data: RowDataModel.create({ id: 121, value: insertValue }),
+          table: tableName,
+          saveType: SaveType.insert
+        },
+        {
+          data: RowDataModel.create({ id: 122, value: insertValue }),
           table: tableName,
           saveType: SaveType.insert
         }

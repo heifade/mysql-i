@@ -39,8 +39,6 @@ export class Schema {
       if (!schemaModel) {
         schemaModel = new SchemaModel();
 
-        SchemaCache.set(database, schemaModel);
-
         let sqlTables = `SELECT TABLE_NAME as tableName
           from information_schema.TABLES
           where TABLE_SCHEMA = ? `;
@@ -113,6 +111,8 @@ export class Schema {
                 procedureModel.pars.push(parModel);
               });
           });
+
+          SchemaCache.set(database, schemaModel);
 
           resolve(schemaModel);
         });
