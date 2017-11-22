@@ -8,7 +8,7 @@ mysql-i
 [![devDependency Status][devdep-image]][devdep-url]
 [![NPM downloads][downloads-image]][npm-url]
 [![Build Status](https://travis-ci.org/heifade/mysql-i.svg?branch=master)](https://travis-ci.org/heifade/mysql-i)
-[![Coverage Status](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/github/heifade/mysql-i)
 
 
 
@@ -126,7 +126,7 @@ let conn = await ConnectionHelper.create({
 第二步：执行创建数据库的SQL
 await Exec.exec(
   conn,
-  `create database if not exists test2 default character set utf8 collate utf8_general_ci`
+  "create database if not exists test2 default character set utf8 collate utf8_general_ci"
 );
 第三步：执行创建表的SQL
 await Exec.exec(
