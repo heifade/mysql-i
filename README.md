@@ -106,81 +106,93 @@ mysql-i的主要特点：
 
 
 # 例子
-```bash
 例子1 创建一个数据库test2，创建一张表tbl_test
-第一步：创建连接
-let conn = await ConnectionHelper.create({
-  host: "",
-  user: "",
-  password: "",
-  database: "",
-  port: 3306
-});
+```js
+async function run() {
+  // 第一步：创建连接
+  let conn = await mysqli.ConnectionHelper.create({
+    host: "localhost",
+    user: "travis",
+    password: "",
+    database: "test",
+    port: 3306
+  });
 
-第二步：执行创建数据库的SQL
-await Exec.exec(
-  conn,
-  "create database if not exists test2 default character set utf8 collate utf8_general_ci"
-);
-第三步：执行创建表的SQL
-await Exec.exec(
-  conn,
-  `create table test2.tbl_test (
+  // 第二步：执行创建数据库的SQL
+  await mysqli.Exec.exec(
+    conn,
+    "create database if not exists test2 default character set utf8 collate utf8_general_ci"
+  );
+  // 第三步：执行创建表的SQL
+  await mysqli.Exec.exec(
+    conn,
+    `create table if not exists test2.tbl_test (
     id int not null primary key,
     value varchar(255)
   )`
-);
-第四步：关闭连接
-await ConnectionHelper.close(conn);
+  );
+  // 第四步：关闭连接
+  await mysqli.ConnectionHelper.close(conn);
+}
+
+run()
+  .then(() => {
+    console.log("完成");
+  })
+  .catch(err => {
+    console.log(err);
+  });
 ```
 
 
-```bash
 例子2 插入一条数据
+```js
 await Save.save(conn, {
   data: RowDataModel.create({ id: 1, value: "1" }), // 插入的数据{ id: 1, value: "1" }
   table: "tbl_test", // 表名
   saveType: SaveType.insert, //插入
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
 });
-当操作相当于执行SQL： insert into test2.tbl_test(id, value) values(1, '1');
 ```
+当操作相当于执行SQL： insert into test2.tbl_test(id, value) values(1, '1');
 
-```bash
+
 例子3 根据主键更新一条数据
+```js
 await Save.save(conn, {
   data: RowDataModel.create({ id: 1, value: "2" }), // 的数据{ id: 1, value: "2" }
   table: "tbl_test", // 表名
   saveType: SaveType.update, //更新
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
 });
-当操作相当于执行SQL： update test2.tbl_test set value value='2' where id = 1;
 ```
+当操作相当于执行SQL： update test2.tbl_test set value value='2' where id = 1;
 
-```bash
 例子4 删除一条数据
+```js
 await Save.save(conn, {
   data: RowDataModel.create({ id: 1 }), // 的数据{ id: 1 }
   table: "tbl_test", // 表名
   saveType: SaveType.delete, //删除
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
 });
-当操作相当于执行SQL： delete from test2.tbl_test where id = 1;
 ```
+当操作相当于执行SQL： delete from test2.tbl_test where id = 1;
 
-```bash
 例子5 替换一条数据
+```js
 await Save.save(conn, {
   data: RowDataModel.create({ id: 1 }), // 的数据{ id: 1 }
   table: "tbl_test", // 表名
   saveType: SaveType.replace, //替换
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
 });
-当操作相当于执行SQL： replace into test2.tbl_test(id, value) values(1, '2');
 ```
+当操作相当于执行SQL： replace into test2.tbl_test(id, value) values(1, '2');
 
-```bash
+
 例子6 多条数据并发操作
+```js
 await Save.savesSeq(conn, [
   {
     data: RowDataModel.create({ id: 1, value: "11" }),
@@ -209,8 +221,8 @@ await Save.savesSeq(conn, [
 ]);
 ```
 
-```bash
 例子7 事务操作
+```js
 try {
   await Transaction.begin(conn);
   await Save.saves(conn, [
@@ -239,9 +251,8 @@ try {
 }
 ```
 
-
-```bash
 例子8 查询
+```js
 let result = await Select.select(conn, {
   sql: "select * from test2.tbl_test where id=?", //SQL语句
   where: ['1'] // 条件
@@ -263,9 +274,8 @@ result = await Select.selectSplitPage(conn, {
 console.log(result);
 ```
 
-
-```bash
 例子9 执行存储过程
+```js
 result = await Procedure.exec(conn, {
   database: "test",
   procedure: "p_insert2",
