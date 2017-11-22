@@ -1,0 +1,55 @@
+{
+  "name": "mysql-i",
+  "version": "2.0.3",
+  "description": "mysql interface, base on mysql",
+  "main": "./es/index.js",
+  "module": "./es/index.js",
+  "files": [
+    "es"
+  ],
+  "dependencies": {
+    "mysql": "^2.15.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.5",
+    "@types/jsdom": "^11.0.4",
+    "@types/mocha": "^2.2.44",
+    "@types/mysql": "^2.15.1",
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
+    "jsdom": "^11.4.0",
+    "mocha": "^4.0.1",
+    "nyc": "^11.3.0",
+    "source-map-support": "^0.5.0",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.1",
+    "typescript-require": "^0.2.9-1",
+    "typings": "^2.1.1"
+  },
+  "scripts": {
+    "removeDist": "node ./tools/deleteOutPath.js",
+    "build": "npm run removeDist && tsc -p tsconfig.json",
+    "test": "nyc mocha -t 5000",
+    "test-nyc": "./node_modules/.bin/nyc npm test && nyc report --reporter=text-lcov | coveralls"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "keywords": [
+    "mysql",
+    "mysql-i",
+    "promise"
+  ],
+  "author": "heifade",
+  "license": "MIT"
+}
