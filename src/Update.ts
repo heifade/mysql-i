@@ -4,8 +4,52 @@ import { Schema } from "./schema/Schema";
 import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
 
+/**
+ * 更新数据类
+ *
+ * @export
+ * @class Update
+ */
 export class Update {
-  // 根据主键更新一条数据，主键不能更新
+  /**
+   * 根据主键更新一条数据，主键不能更新。如需更新主键，见{@link Update.updateByWhere}
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {{
+   *       data: RowDataModel;
+   *       database?: string;
+   *       table: string;
+   *     }} pars
+   * @returns Promise对象
+   * @memberof Update
+   * @example
+   * <pre>
+   * tbl1表结构：
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int,
+   *  f4 int,
+   *  primary key(f1, f2)
+   * )
+   * 例1：相当于SQL update tbl1 set f3=3, f4=4 where f1=1 and f2=2
+   * let result = await Update.update(conn, {
+   *    data: RowDataModel.create({ f1: 1, f2: 2, f3: 3, f4: 4 }),
+   *    table: 'tbl1'
+   * });
+   * 例2：相当于SQL update tbl1 set f3=3 where f1=1 and f2=2
+   * let result = await Update.update(conn, {
+   *    data: RowDataModel.create({ f1: 1, f2: 2, f3: 3 }),
+   *    table: 'tbl1'
+   * });
+   * 例3：相当于SQL update tbl1 set f3=3, f4=4
+   * let result = await Update.update(conn, {
+   *    data: RowDataModel.create({ f3: 3, f4: 4 }),
+   *    table: 'tbl1'
+   * });
+   * </pre>
+   */
   public static update(
     conn: Connection,
     pars: {
@@ -96,9 +140,6 @@ export class Update {
     }
 
     let where = pars.where;
-    // if (!where) {
-    //   return Promise.reject(new Error(`where不能为空！`));
-    // }
 
     let table = pars.table;
     if (!table) {

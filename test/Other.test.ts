@@ -1,14 +1,16 @@
 import { expect } from "chai";
 import "mocha";
-import { RowDataModel } from "../src/model/RowDataModel";
-import { Utils } from "../src/util/Utils";
 import { PoolConnection, Connection } from "mysql";
 import { initTable } from "./DataInit";
-import { Exec } from "../src/Exec";
-import { Schema } from "../src/schema/Schema";
-import { Where } from "../src/util/Where";
+import {
+  Schema,
+  RowDataModel,
+  Utils,
+  Exec,
+  Where,
+  ConnectionHelper
+} from "../src/index";
 import { connectionConfig } from "./connectionConfig";
-import { ConnectionHelper } from "../src/ConnectionHelper";
 
 describe("Other", function() {
   let tableName = "tbl_test_where";

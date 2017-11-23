@@ -7,11 +7,13 @@ import { Save } from "./Save";
 import { Transaction } from "./Transaction";
 import { Exec } from "./Exec";
 import { ConnectionPool } from "./ConnectionPool";
-import { SaveType } from "./model/EditDataModel";
+import { SaveType } from "./model/SaveType";
 import { RowDataModel } from "./model/RowDataModel";
 import { Procedure } from "./Procedure";
 import { ConnectionHelper } from "./ConnectionHelper";
 import { Schema } from "./schema/Schema";
+import { Where } from "./util/Where";
+import { Utils } from "./util/Utils";
 
 export {
   Insert,
@@ -27,5 +29,7 @@ export {
   SaveType,
   RowDataModel,
   Procedure,
-  Schema
+  Schema,
+  Where,
+  Utils
 };

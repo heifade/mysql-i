@@ -11,7 +11,7 @@ describe("Replace", function() {
   before(done => {
     (async function() {
       conn = await ConnectionHelper.create(connectionConfig);
-      await initTable(conn, tableName, true);
+      await initTable(conn, tableName, false);
     })().then(() => {
       done();
     });

@@ -5,10 +5,10 @@ import { PoolConnection, Connection } from "mysql";
 import {
   ConnectionHelper,
   RowDataModel,
-  Schema,
   Select,
   Procedure,
-  Exec
+  Exec,
+  Schema
 } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 

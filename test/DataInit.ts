@@ -1,8 +1,4 @@
-import { Save } from "../src/Save";
-import { Exec } from "../src/Exec";
-import { RowDataModel } from "../src/model/RowDataModel";
-import { SaveType } from "../src/index";
-import { Schema } from "../src/schema/Schema";
+import { Save, Exec, RowDataModel, SaveType, Schema } from "../src/index";
 import { Connection } from "mysql";
 
 export let initTable = async function(

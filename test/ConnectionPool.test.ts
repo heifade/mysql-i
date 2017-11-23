@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { ConnectionPool } from "../src/ConnectionPool";
+import { ConnectionPool } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
 describe("ConnectionPool", function() {

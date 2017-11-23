@@ -1,7 +1,22 @@
 import { RowDataModel } from "../model/RowDataModel";
 import { TableSchemaModel } from "../model/SchemaModel";
 
+/**
+ * 条件类
+ *
+ * @export
+ * @class Where
+ */
 export class Where {
+  /**
+   * 条件拼装
+   *
+   * @static
+   * @param {RowDataModel} where - 条件对象
+   * @param {TableSchemaModel} tableSchemaModel 表结构信息
+   * @returns
+   * @memberof Where
+   */
   public static getWhereSQL(
     where: RowDataModel,
     tableSchemaModel: TableSchemaModel

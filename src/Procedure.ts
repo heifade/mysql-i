@@ -4,8 +4,26 @@ import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 import { Select } from "./Select";
 
+/**
+ * 存储过程类
+ *
+ * @export
+ * @class Procedure
+ */
 export class Procedure {
-  // 执行一个存储过程
+  /**
+   * 执行一个存储过程
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {{
+   *       data?: RowDataModel;
+   *       database?: string;
+   *       procedure: string;
+   *     }} pars
+   * @returns Promise对象
+   * @memberof Procedure
+   */
   public static exec(
     conn: Connection,
     pars: {

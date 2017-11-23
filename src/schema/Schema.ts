@@ -10,7 +10,12 @@ import {
 import { GlobalCache } from "../global/GlobalCache";
 import { Connection } from "mysql";
 
-class SchemaCache {
+/**
+ * 数据库架构信息缓存类
+ *
+ * @class SchemaCache
+ */
+export class SchemaCache {
   private static globalKey = "SchemaModel";
   private static getHash() {
     let hash = GlobalCache.get(SchemaCache.globalKey);
@@ -20,19 +25,57 @@ class SchemaCache {
     }
     return hash;
   }
-  public static get(key: string) {
-    return Reflect.get(SchemaCache.getHash(), key);
+  /**
+   * 获取指定数据库的架构信息
+   *
+   * @static
+   * @param {string} database - 数据库名称
+   * @returns
+   * @memberof SchemaCache
+   */
+  public static get(database: string) {
+    return Reflect.get(SchemaCache.getHash(), database);
   }
-  public static set(key: string, value: any) {
-    return Reflect.set(SchemaCache.getHash(), key, value);
+  /**
+   * 设置指定数据库的架构信息
+   *
+   * @static
+   * @param {string} database - 数据库名称
+   * @param {*} value - 架构信息
+   * @returns
+   * @memberof SchemaCache
+   */
+  public static set(database: string, value: SchemaModel) {
+    return Reflect.set(SchemaCache.getHash(), database, value);
   }
 }
 
+/**
+ * 数据库架构信息
+ *
+ * @export
+ * @class Schema
+ */
 export class Schema {
+  /**
+   * 清空指定数据库的架构信息
+   *
+   * @static
+   * @param {string} database - 数据库名称
+   * @memberof SchemaCache
+   */
   public static clear(database: string) {
     SchemaCache.set(database, null);
   }
-
+  /**
+   * 获取数据库架构信息
+   *
+   * @static
+   * @param {Connection} conn
+   * @param {string} database
+   * @returns
+   * @memberof Schema
+   */
   public static getSchema(conn: Connection, database: string) {
     return new Promise<SchemaModel>((resolve, reject) => {
       let schemaModel = SchemaCache.get(database);

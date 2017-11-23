@@ -210,6 +210,33 @@ describe("Update", function() {
       });
   });
 
+  it("update as data with no primary key", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}_update5`;
+
+      await Update.update(conn, {
+        data: RowDataModel.create({
+          value: insertValue
+        }),
+        table: tableName
+      });
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select * from ${tableName}`
+      });
+
+      expect(rowData.get("value")).to.equal(insertValue);
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
+
   it("when error of update", done => {
     let asyncFunc = async function() {
       let insertValue = `123456789012345678901234567890123456789012345678901234567890`;

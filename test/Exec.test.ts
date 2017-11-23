@@ -66,6 +66,14 @@ describe("Exec", function() {
         let errCode = Reflect.get(err, "code");
         expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
       });
+
+
+
+      await Exec.execsSeq(conn, [
+        `drop table if exists tbl1`,
+        `drop table if exists tbl2`,
+        `drop table if exists tbl3`,
+       ]);
     };
 
     asyncFunc()

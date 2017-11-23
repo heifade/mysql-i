@@ -4,48 +4,6 @@ import { SelectParamsModel } from "./model/SelectParamsModel";
 import { SplitPageParamsModel } from "./model/SplitPageParamsModel";
 import { SplitPageResultModel } from "./model/SplitPageResultModel";
 
-// let readList = (query: Query) => {
-//   return new Promise<RowDataModel[]>((resolve, reject) => {
-//     let list = new Array<RowDataModel>();
-//     query
-//       .on("error", (error: MysqlError) => {
-//         reject(error);
-//       })
-//       .on("fields", (fields: FieldInfo, index: number) => {
-//         // console.log(fields);
-//       })
-//       .on("result", (row, index: number) => {
-//         let item = new RowDataModel();
-//         Object.assign(item, row);
-//         list.push(item);
-//       })
-//       .on("end", () => {
-//         resolve(list);
-//       });
-//   });
-// };
-
-// let readRow = (query: Query) => {
-//   return new Promise<RowDataModel>((resolve, reject) => {
-//     let top1Row: RowDataModel = null;
-//     query
-//       .on("error", (error: MysqlError) => {
-//         reject(error);
-//       })
-//       .on("fields", (fields: FieldInfo, index: number) => {
-//         // console.log(fields);
-//       })
-//       .on("result", (row, index: number) => {
-//         let item = new RowDataModel();
-//         Object.assign(item, row);
-//         top1Row = item;
-//       })
-//       .on("end", () => {
-//         resolve(top1Row);
-//       });
-//   });
-// };
-
 let readListFromResult = (result: any) => {
   return result.map((h: any) => {
     let item = new RowDataModel();
@@ -53,8 +11,36 @@ let readListFromResult = (result: any) => {
   });
 };
 
+/**
+ * 查询类
+ *
+ * @export
+ * @class Select
+ */
 export class Select {
-  // 单个SQL查询
+  /**
+   * 单个SQL查询
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SelectParamsModel} param - 查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * @example
+   * <pre>
+   * tbl1表结构：
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * 例1：
+   * let list = await Select.select(conn, {
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [1]
+   * });
+   * </pre>
+   */
   public static select(conn: Connection, param: SelectParamsModel) {
     return new Promise<RowDataModel[]>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
@@ -67,7 +53,32 @@ export class Select {
     });
   }
 
-  // 多个SQL查询
+  /**
+   * 多个SQL查询
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SelectParamsModel[]} params - 查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * @example
+   * <pre>
+   * tbl1表结构：
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * 例1：
+   * let list = await Select.selects(conn, [{
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [1]
+   *  }, {
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [2]
+   * }]);
+   * </pre>
+   */
   public static selects(conn: Connection, params: SelectParamsModel[]) {
     return new Promise<RowDataModel[][]>((resolve, reject) => {
       let promises = new Array<Promise<RowDataModel[]>>();
@@ -83,7 +94,27 @@ export class Select {
     });
   }
 
-  // 查询单个SQL，返回第一条数据
+  /**
+   * 查询单个SQL，返回第一条数据
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SelectParamsModel} param - 查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * @example
+   * <pre>
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * let result = await Select.selectTop1(conn, {
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [1]
+   * });
+   * </pre>
+   */
   public static selectTop1(conn: Connection, param: SelectParamsModel) {
     return new Promise<RowDataModel>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
@@ -96,7 +127,26 @@ export class Select {
       });
     });
   }
-  // 查询单个SQL，返回行数
+  /**
+   * 查询单个SQL，返回行数
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SelectParamsModel} param - 查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * <pre>
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * let result = await Select.selectCount(conn, {
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [1]
+   * });
+   * </pre>
+   */
   public static selectCount(conn: Connection, param: SelectParamsModel) {
     return new Promise<number>((resolve, reject) => {
       let countSql = `select count(*) as value from (${param.sql}) tCount`;
@@ -113,11 +163,29 @@ export class Select {
     });
   }
 
-  //分页查询
-  public static selectSplitPage(
-    conn: Connection,
-    param: SplitPageParamsModel
-  ) {
+  /**
+   * 分页查询
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SplitPageParamsModel} param - 分页查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * <pre>
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * let result = await Select.selectSplitPage(conn, {
+   *   sql: `select * from tbl1 where id=?`,
+   *   where: [1],
+   *   pageSize: 10,
+   *   index: 0
+   * });
+   * </pre>
+   */
+  public static selectSplitPage(conn: Connection, param: SplitPageParamsModel) {
     return new Promise<SplitPageResultModel>((resolve, reject) => {
       let countPromise = Select.selectCount(conn, param);
 
