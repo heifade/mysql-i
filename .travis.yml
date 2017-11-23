@@ -8,8 +8,8 @@ before_install:
 script :
   - "npm run build"
   - "npm run doc"
-  - "git add es doc"
-  - "git commit -m 'auto build and doc by travis'"
+  - "git add es docs"
+  - "git commit -m 'auto build and docs by travis'"
   - "npm test"
 after_script:
   - "npm run test-nyc"

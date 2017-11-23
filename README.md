@@ -14,7 +14,8 @@ mysql-i
 [npm-url]: https://npmjs.org/package/mysql-i
 [downloads-image]: https://img.shields.io/npm/dm/mysql-i.svg
 
-
+# 开发文档
+[中文文档](https://github.com/heifade/mysql-i/docs/index.html)
 
 # 安装
 ```bash
