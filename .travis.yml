@@ -24,3 +24,4 @@ deploy:
   on:
     tags: true
     repo: heifade/mysql-i
+
