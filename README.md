@@ -15,8 +15,8 @@ mysql-i
 [downloads-image]: https://img.shields.io/npm/dm/mysql-i.svg
 
 
-# 开发文档
-见 docs/index.html
+# 源代码及文档
+[源代码及文档](https://github.com/heifade/mysql-i)
 
 # 安装
 ```bash
