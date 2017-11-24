@@ -16,7 +16,8 @@ mysql-i
 
 
 # 源代码及文档
-[源代码及文档](https://github.com/heifade/mysql-i)
+[源代码](https://github.com/heifade/mysql-i)
+[开发文档](https://heifade.github.io/mysql-i/)
 
 # 安装
 ```bash

@@ -1,6 +1,6 @@
 {
   "name": "mysql-i",
-  "version": "2.0.18",
+  "version": "2.0.19",
   "description": "mysql interface, base on mysql",
   "main": "./es/index.js",
   "module": "./es/index.js",
@@ -30,7 +30,7 @@
   "scripts": {
     "removeDist": "node ./tools/deleteOutPath.js",
     "tsBuild": "tsc -p tsconfig.json",
-    "docs": "./node_modules/.bin/typedoc --out docs src --module commonjs --hideGenerator",
+    "docs": "./node_modules/.bin/typedoc --out docs src --module commonjs --hideGenerator --includeDeclarations && node ./tools/replaceDocFileUnderline.js",
     "build": "npm run removeDist && npm run tsBuild && npm run docs",
     "test": "nyc mocha -t 5000",
     "test-nyc": "./node_modules/.bin/nyc npm test && nyc report --reporter=text-lcov | coveralls"
