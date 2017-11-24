@@ -10,7 +10,7 @@ script :
   - "npm run build"
   - "git add es docs"
   - "git commit -m 'rebuild by travis'"
-  - "git push"
+  - "git push origin master"
 after_script:
   - "npm run test-nyc"
 
