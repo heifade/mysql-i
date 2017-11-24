@@ -27,7 +27,7 @@ function eachFile(path, callback) {
 function renameFile(path) {
   eachFile(path, file => {
     var fromName = file.file;
-    var toName = file.file.replace(/_/g, ".");
+    var toName = file.file.replace(/_/g, "A");
     fs.renameSync(file.path + "/" + fromName, file.path + "/" + toName);
 
     if (fromName != toName) {
