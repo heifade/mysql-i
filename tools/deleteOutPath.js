@@ -18,3 +18,4 @@ function deletePath(path) {
 }
 
 deletePath("./es");
+deletePath("./docs");
