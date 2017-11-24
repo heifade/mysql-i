@@ -1,7 +1,7 @@
 import { Connection } from "mysql";
 
 /**
- * 执行SQL类
+ * 执行SQL
  *
  * @export
  * @class Exec

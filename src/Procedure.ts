@@ -5,7 +5,7 @@ import { Utils } from "./util/Utils";
 import { Select } from "./Select";
 
 /**
- * 存储过程类
+ * 存储过程
  *
  * @export
  * @class Procedure

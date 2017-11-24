@@ -8,7 +8,7 @@ import { Delete } from "./Delete";
 import { Replace } from "./Replace";
 
 /**
- * 保存类
+ * 保存
  *
  * @export
  * @class Save

@@ -1,5 +1,5 @@
 /**
- * 工具类
+ * 工具
  *
  * @export
  * @class Utils

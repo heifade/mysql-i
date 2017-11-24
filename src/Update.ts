@@ -5,7 +5,7 @@ import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
 
 /**
- * 更新数据类
+ * 更新数据
  *
  * @export
  * @class Update

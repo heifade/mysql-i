@@ -2,7 +2,7 @@ import { RowDataModel } from "../model/RowDataModel";
 import { TableSchemaModel } from "../model/SchemaModel";
 
 /**
- * 条件类
+ * 条件
  *
  * @export
  * @class Where

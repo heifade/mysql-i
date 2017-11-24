@@ -1,7 +1,7 @@
 import { Connection } from "mysql";
 
 /**
- * 事务类
+ * 事务
  *
  * @export
  * @class Transaction

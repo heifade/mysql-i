@@ -6,7 +6,7 @@ import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
 
 /**
- * 删除数据类
+ * 删除数据
  *
  * @export
  * @class Delete

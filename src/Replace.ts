@@ -4,7 +4,7 @@ import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 
 /**
- * 替换类
+ * 替换
  *
  * @export
  * @class Replace

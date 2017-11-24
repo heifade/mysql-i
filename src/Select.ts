@@ -12,7 +12,7 @@ let readListFromResult = (result: any) => {
 };
 
 /**
- * 查询类
+ * 查询
  *
  * @export
  * @class Select

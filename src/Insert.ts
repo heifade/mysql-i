@@ -4,7 +4,7 @@ import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 
 /**
- * 插入数据类
+ * 插入数据
  *
  * @export
  * @class Insert

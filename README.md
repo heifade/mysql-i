@@ -170,7 +170,7 @@ await Save.save(conn, {
 });
 ...
 ```
-当操作相当于执行SQL： insert into test2.tbl_test(id, value) values(1, '1');
+此操作相当于执行SQL： insert into test2.tbl_test(id, value) values(1, '1');
 
 
 例子3 根据主键更新一条数据
@@ -184,7 +184,7 @@ await Save.save(conn, {
 });
 ...
 ```
-当操作相当于执行SQL： update test2.tbl_test set value value='2' where id = 1;
+此操作相当于执行SQL： update test2.tbl_test set value value='2' where id = 1;
 
 例子4 删除一条数据
 ```js
@@ -197,7 +197,7 @@ await Save.save(conn, {
 });
 ...
 ```
-当操作相当于执行SQL： delete from test2.tbl_test where id = 1;
+此操作相当于执行SQL： delete from test2.tbl_test where id = 1;
 
 例子5 替换一条数据
 ```js
@@ -210,7 +210,7 @@ await Save.save(conn, {
 });
 ...
 ```
-当操作相当于执行SQL： replace into test2.tbl_test(id, value) values(1, '2');
+此操作相当于执行SQL： replace into test2.tbl_test(id, value) values(1, '2');
 
 
 例子6 多条数据并发操作

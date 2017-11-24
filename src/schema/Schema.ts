@@ -11,7 +11,7 @@ import { GlobalCache } from "../global/GlobalCache";
 import { Connection } from "mysql";
 
 /**
- * 数据库架构信息缓存类
+ * 数据库架构信息缓存
  *
  * @class SchemaCache
  */
