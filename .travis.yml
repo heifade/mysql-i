@@ -7,6 +7,9 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 script :
   - "npm test"
+  - "npm run build"
+  - "git add es docs"
+  - "git commit -m 'rebuild by travis'"
 after_script:
   - "npm run test-nyc"
 
