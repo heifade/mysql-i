@@ -21,7 +21,7 @@ cache:
 deploy:
   provider: npm
   email: heifade@126.com
-  api_key: c2baad22-063f-4162-a53b-af7d0b34f39b
+  api_key: $NPM_TOKEN
   on:
     tags: true
     repo: heifade/mysql-i
