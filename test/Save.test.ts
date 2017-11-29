@@ -271,4 +271,204 @@ describe("Save", function() {
         done(err);
       });
   });
+
+  it("savesSeq err", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}`;
+
+      try {
+        await Save.savesSeq(conn, [
+          {
+            data: RowDataModel.create({ id: 200, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          },
+          {
+            data: RowDataModel.create({ id: 200, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          }
+        ]);
+      } catch (err) {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      }
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [200]
+      });
+      expect(rowData.get("value")).to.equal(insertValue);
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
+
+  it("savesWithTran must be success", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}`;
+
+      try {
+        await Save.savesWithTran(conn, [
+          {
+            data: RowDataModel.create({ id: 300, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          },
+          {
+            data: RowDataModel.create({ id: 301, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          }
+        ]);
+      } catch (err) {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      }
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [300]
+      });
+      rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [301]
+      });
+      expect(rowData.get("value")).to.equal(insertValue);
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
+
+  it("savesWithTran err", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}`;
+
+      try {
+        await Save.savesWithTran(conn, [
+          {
+            data: RowDataModel.create({ id: 302, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          },
+          {
+            data: RowDataModel.create({ id: 302, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          }
+        ]);
+      } catch (err) {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      }
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [302]
+      });
+      expect(rowData).to.be.null;
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
+
+  it("savesSeqWithTran must be success", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}`;
+
+      try {
+        await Save.savesSeqWithTran(conn, [
+          {
+            data: RowDataModel.create({ id: 400, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          },
+          {
+            data: RowDataModel.create({ id: 401, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          }
+        ]);
+      } catch (err) {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      }
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [400]
+      });
+      expect(rowData.get("value")).to.equal(insertValue);
+
+      rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [401]
+      });
+      expect(rowData.get("value")).to.equal(insertValue);
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
+
+  it("savesSeqWithTran err", done => {
+    let asyncFunc = async function() {
+      let insertValue = `value${Math.random()}`;
+
+      try {
+        await Save.savesSeqWithTran(conn, [
+          {
+            data: RowDataModel.create({ id: 402, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          },
+          {
+            data: RowDataModel.create({ id: 402, value: insertValue }),
+            table: tableName,
+            saveType: SaveType.insert
+          }
+        ]);
+      } catch (err) {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      }
+
+      let rowData = await Select.selectTop1(conn, {
+        sql: `select value from ${tableName} where id=?`,
+        where: [402]
+      });
+      expect(rowData).to.be.null;
+    };
+
+    asyncFunc()
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
 });

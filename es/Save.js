@@ -13,6 +13,7 @@ const Insert_1 = require("./Insert");
 const Update_1 = require("./Update");
 const Delete_1 = require("./Delete");
 const Replace_1 = require("./Replace");
+const Transaction_1 = require("./Transaction");
 class Save {
     static save(conn, pars) {
         switch (pars.saveType) {
@@ -66,11 +67,51 @@ class Save {
             });
         });
     }
+    static savesWithTran(conn, list) {
+        return new Promise((resolve, reject) => {
+            (function () {
+                return __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        yield Transaction_1.Transaction.begin(conn);
+                        yield Save.saves(conn, list);
+                        yield Transaction_1.Transaction.commit(conn);
+                        resolve();
+                    }
+                    catch (err) {
+                        yield Transaction_1.Transaction.rollback(conn);
+                        reject(err);
+                    }
+                });
+            })();
+        });
+    }
     static savesSeq(conn, list) {
         return __awaiter(this, void 0, void 0, function* () {
             for (let item of list) {
                 yield Save.save(conn, item);
             }
+        });
+    }
+    static savesSeqWithTran(conn, list) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                (function () {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        try {
+                            yield Transaction_1.Transaction.begin(conn);
+                            for (let item of list) {
+                                yield Save.save(conn, item);
+                            }
+                            yield Transaction_1.Transaction.commit(conn);
+                            resolve();
+                        }
+                        catch (err) {
+                            yield Transaction_1.Transaction.rollback(conn);
+                            reject(err);
+                        }
+                    });
+                })();
+            });
         });
     }
 }

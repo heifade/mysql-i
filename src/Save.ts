@@ -6,6 +6,8 @@ import { Insert } from "./Insert";
 import { Update } from "./Update";
 import { Delete } from "./Delete";
 import { Replace } from "./Replace";
+import { Transaction } from "./Transaction";
+import { resolve } from "path";
 
 /**
  * 保存
@@ -112,7 +114,7 @@ export class Save {
    * <pre>
    * 保存多个，并发执行。
    * 当所有保存执行成功时，返回Promise为成功，如果其中一个保存执行出错，返回的Promise为失败。
-   * 注意：此方法没有开启事务。如需开启事务，见 {@link Transaction}
+   * 注意：此方法没有开启事务。如需开启事务，见 {@link savesWithTran}
    * </pre>
    *
    * @static
@@ -161,9 +163,51 @@ export class Save {
 
   /**
    * <pre>
+   * 保存多个，并发执行(事务)
+   * 当所有保存执行成功时，返回Promise为成功，如果其中一个保存执行出错，返回的Promise为失败。
+   * 注意：此方法单独开启事务。如需不开启事务，见 {@link saves}
+   * </pre>
+   *
+   * @static
+   * @param {Connection} conn
+   * @param {Array<{
+   *       data: RowDataModel;
+   *       database?: string;
+   *       table: string;
+   *       saveType: SaveType;
+   *     }>} list
+   * @returns
+   * @memberof Save
+   */
+  public static savesWithTran(
+    conn: Connection,
+    list: Array<{
+      data: RowDataModel;
+      database?: string;
+      table: string;
+      saveType: SaveType;
+    }>
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      (async function() {
+        try {
+          await Transaction.begin(conn);
+          await Save.saves(conn, list);
+          await Transaction.commit(conn);
+          resolve();
+        } catch (err) {
+          await Transaction.rollback(conn);
+          reject(err);
+        }
+      })();
+    });
+  }
+
+  /**
+   * <pre>
    * 保存多个，顺序执行
    * 当所有保存执行成功时，返回Promise为成功，如果其中一个保存执行出错，返回的Promise为失败。
-   * 注意：此方法没有开启事务。如需开启事务，见 {@link Transaction}
+   * 注意：此方法没有开启事务。如需开启事务，见 {@link savesSeqWithTran}
    * </pre>
    *
    * @static
@@ -188,5 +232,49 @@ export class Save {
     for (let item of list) {
       await Save.save(conn, item);
     }
+  }
+
+  /**
+   * <pre>
+   * 保存多个，顺序执行(事务)
+   * 当所有保存执行成功时，返回Promise为成功，如果其中一个保存执行出错，返回的Promise为失败。
+   * 注意：此方法单独开启事务。如需不开启事务，见 {@link savesSeq}
+   * </pre>
+   *
+   * @static
+   * @param {Connection} conn
+   * @param {Array<{
+   *       data: RowDataModel;
+   *       database?: string;
+   *       table: string;
+   *       saveType: SaveType;
+   *     }>} list
+   * @memberof Save
+   */
+  public static async savesSeqWithTran(
+    conn: Connection,
+    list: Array<{
+      data: RowDataModel;
+      database?: string;
+      table: string;
+      saveType: SaveType;
+    }>
+  ) {
+    return new Promise((resolve, reject) => {
+      (async function() {
+        try {
+          await Transaction.begin(conn);
+
+          for (let item of list) {
+            await Save.save(conn, item);
+          }
+          await Transaction.commit(conn);
+          resolve();
+        } catch (err) {
+          await Transaction.rollback(conn);
+          reject(err);
+        }
+      })();
+    });
   }
 }
