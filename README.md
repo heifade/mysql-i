@@ -55,9 +55,13 @@ mysql-i的主要特点：
 >
 > > save 保存一条数据
 >
-> > saves 保存多条数据（并发）
+> > saves 保存多条数据，并发执行
 >
-> > savesSeq 保存多条数据（顺序）
+> > savesWithTran 保存多条数据，并发执行(事务)
+>
+> > savesSeq 保存多条数据，顺序执行
+>
+> > savesSeqWithTran 保存多条数据，顺序执行(事务)
 >
 > Exec 执行SQL
 >
