@@ -36,8 +36,8 @@ export class Select {
    * )
    * 例1：
    * let list = await Select.select(conn, {
-   *   sql: `select * from tbl1 where id=?`,
-   *   where: [1]
+   *   sql: `select * from tbl1 where f1=? and f2=?`,
+   *   where: [1, 2]
    * });
    * </pre>
    */
@@ -71,10 +71,10 @@ export class Select {
    * )
    * 例1：
    * let list = await Select.selects(conn, [{
-   *   sql: `select * from tbl1 where id=?`,
+   *   sql: `select * from tbl1 where f1=?`,
    *   where: [1]
    *  }, {
-   *   sql: `select * from tbl1 where id=?`,
+   *   sql: `select * from tbl1 where f1=?`,
    *   where: [2]
    * }]);
    * </pre>
@@ -110,7 +110,7 @@ export class Select {
    *  f3 int
    * )
    * let result = await Select.selectTop1(conn, {
-   *   sql: `select * from tbl1 where id=?`,
+   *   sql: `select * from tbl1 where f1=?`,
    *   where: [1]
    * });
    * </pre>
@@ -142,7 +142,7 @@ export class Select {
    *  f3 int
    * )
    * let result = await Select.selectCount(conn, {
-   *   sql: `select * from tbl1 where id=?`,
+   *   sql: `select * from tbl1 where f1=?`,
    *   where: [1]
    * });
    * </pre>
@@ -178,7 +178,7 @@ export class Select {
    *  f3 int
    * )
    * let result = await Select.selectSplitPage(conn, {
-   *   sql: `select * from tbl1 where id=?`,
+   *   sql: `select * from tbl1 where f1=?`,
    *   where: [1],
    *   pageSize: 10,
    *   index: 0
