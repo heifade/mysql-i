@@ -122,7 +122,20 @@ export class Update {
     });
   }
 
-  // 根据where更新一条数据，可以更新主键
+  /**
+   * 根据where更新一条数据，可以更新主键
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {{
+   *       data: RowDataModel;
+   *       where?: RowDataModel;
+   *       database?: string;
+   *       table: string;
+   *     }} pars
+   * @returns Promise对象
+   * @memberof Update
+   */
   public static updateByWhere(
     conn: Connection,
     pars: {
