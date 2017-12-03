@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Schema_1 = require("./schema/Schema");
-const RowDataModel_1 = require("./model/RowDataModel");
 const Utils_1 = require("./util/Utils");
 class Insert {
     static insert(conn, pars) {
@@ -23,11 +22,11 @@ class Insert {
                 }
                 let tableName = Utils_1.Utils.getDbObjectName(database, table);
                 let sql = `insert into ${tableName} set ?`;
-                let fieldValues = new RowDataModel_1.RowDataModel();
-                data.keys().map((key, index) => {
+                let fieldValues = {};
+                Reflect.ownKeys(data).map((key, index) => {
                     let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
                     if (column) {
-                        fieldValues.set(column.columnName, data.get(column.columnName));
+                        Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
                     }
                 });
                 conn.query(sql, fieldValues, (err2, result) => {

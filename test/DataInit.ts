@@ -1,4 +1,4 @@
-import { Save, Exec, RowDataModel, SaveType, Schema } from "../src/index";
+import { Save, Exec, SaveType, Schema } from "../src/index";
 import { Connection } from "mysql";
 
 export let initTable = async function(
@@ -20,8 +20,8 @@ export let initTable = async function(
 
   for (let i = 0; i < 10; i++) {
     let data = autoIncrement
-      ? RowDataModel.create({ value: `value${Math.random()}` })
-      : RowDataModel.create({ id: i, value: `value${Math.random()}` });
+      ? { value: `value${Math.random()}` }
+      : { id: i, value: `value${Math.random()}` };
 
     await Save.save(conn, {
       data: data,

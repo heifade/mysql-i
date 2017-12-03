@@ -1,6 +1,5 @@
 import { Connection } from "mysql";
 import { Schema } from "./schema/Schema";
-import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 import { Select } from "./Select";
 
@@ -17,7 +16,7 @@ export class Procedure {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {{
-   *       data?: RowDataModel;
+   *       data?: {};
    *       database?: string;
    *       procedure: string;
    *     }} pars
@@ -27,7 +26,7 @@ export class Procedure {
   public static exec(
     conn: Connection,
     pars: {
-      data?: RowDataModel;
+      data?: {};
       database?: string;
       procedure: string;
     }
@@ -58,7 +57,7 @@ export class Procedure {
         let parSQL = "";
 
         if (data) {
-          data.keys().map((key, index) => {
+          Reflect.ownKeys(data).map((key, index) => {
             let par = procedureSchemaModel.pars.filter(
               par => par.name === key.toString()
             )[0];
@@ -68,7 +67,7 @@ export class Procedure {
                 parSQL += `@${par.name},`;
               } else {
                 parSQL += "?,";
-                parList.push(data.get(par.name));
+                parList.push(Reflect.get(data, par.name));
               }
             }
           });

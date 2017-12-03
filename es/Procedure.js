@@ -21,7 +21,7 @@ class Procedure {
                 let parList = new Array();
                 let parSQL = "";
                 if (data) {
-                    data.keys().map((key, index) => {
+                    Reflect.ownKeys(data).map((key, index) => {
                         let par = procedureSchemaModel.pars.filter(par => par.name === key.toString())[0];
                         if (par) {
                             if (par.parameterMode === "out") {
@@ -29,7 +29,7 @@ class Procedure {
                             }
                             else {
                                 parSQL += "?,";
-                                parList.push(data.get(par.name));
+                                parList.push(Reflect.get(data, par.name));
                             }
                         }
                     });

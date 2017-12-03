@@ -90,12 +90,12 @@ create table tbl1 (
 try {
   await Transaction.begin(conn);
   await Save.save(conn, {
-    data: RowDataModel.create({ f1: 1, f2: 2 }),
+    data: { f1: 1, f2: 2 },
     table: tableName,
     saveType: SaveType.insert
   });
   await Save.save(conn, {
-    data: RowDataModel.create({ f2: 2, f2: 2 }),
+    data: { f2: 2, f2: 2 },
     table: tableName,
     saveType: SaveType.insert
   });
@@ -143,7 +143,7 @@ try {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Transaction.ts#L42">Transaction.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Transaction.ts#L42">Transaction.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -178,7 +178,7 @@ try {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Transaction.ts#L62">Transaction.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Transaction.ts#L62">Transaction.ts:62</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -213,7 +213,7 @@ try {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Transaction.ts#L82">Transaction.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Transaction.ts#L82">Transaction.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -284,9 +284,6 @@ try {
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/AindexA.html">"index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/AmodelArowdatamodelA.html">"model/<wbr>Row<wbr>Data<wbr>Model"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/AmodelAsavetypeA.html">"model/<wbr>Save<wbr>Type"</a>

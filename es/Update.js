@@ -25,16 +25,16 @@ class Update {
                 let whereList = new Array();
                 let fieldSQL = ` `;
                 let whereSQL = ``;
-                data.keys().map((key, index) => {
+                Reflect.ownKeys(data).map((key, index) => {
                     let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
                     if (column) {
                         if (column.primaryKey) {
                             whereSQL += ` ${column.columnName}=? and`;
-                            whereList.push(data.get(column.columnName));
+                            whereList.push(Reflect.get(data, column.columnName));
                         }
                         else {
                             fieldSQL += ` ${column.columnName}=?,`;
-                            dataList.push(data.get(column.columnName));
+                            dataList.push(Reflect.get(data, column.columnName));
                         }
                     }
                 });
@@ -76,11 +76,11 @@ class Update {
                 }
                 let dataList = new Array();
                 let fieldSQL = ` `;
-                data.keys().map((key, index) => {
+                Reflect.ownKeys(data).map((key, index) => {
                     let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
                     if (column) {
                         fieldSQL += ` ${column.columnName}=?,`;
-                        dataList.push(data.get(column.columnName));
+                        dataList.push(Reflect.get(data, column.columnName));
                     }
                 });
                 fieldSQL = fieldSQL.trim().replace(/\,$/, "");

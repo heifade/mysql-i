@@ -5,12 +5,12 @@ class Where {
         let whereSQL = ``;
         let whereList = new Array();
         if (where != null) {
-            where.keys().map((key, index) => {
+            Reflect.ownKeys(where).map((key, index) => {
                 let k = key.toString();
                 if (tableSchemaModel.columns.filter(column => column.columnName === k)
                     .length) {
                     whereSQL += ` ${k} = ? and`;
-                    whereList.push(where.get(k));
+                    whereList.push(Reflect.get(where, k));
                 }
             });
         }

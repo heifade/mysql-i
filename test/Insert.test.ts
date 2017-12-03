@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
 import { PoolConnection, Connection } from "mysql";
-import { ConnectionHelper, Insert, RowDataModel, Select } from "../src/index";
+import { ConnectionHelper, Insert, Select } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
 describe("Insert", function() {
@@ -30,7 +30,7 @@ describe("Insert", function() {
       let insertValue = `value${Math.random()}`;
 
       let result = await Insert.insert(conn, {
-        data: RowDataModel.create({ value: insertValue }),
+        data: { value: insertValue },
         table: tableName
       });
 
@@ -42,7 +42,7 @@ describe("Insert", function() {
       });
 
       expect(rowData != null).to.be.true;
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -79,7 +79,7 @@ describe("Insert", function() {
       let insertValue = `value${Math.random()}`;
 
       await Insert.insert(conn, {
-        data: RowDataModel.create({ value: insertValue }),
+        data: { value: insertValue },
         table: null
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -103,7 +103,7 @@ describe("Insert", function() {
       let tableName = `tbl_not_exists`;
 
       await Insert.insert(conn, {
-        data: RowDataModel.create({ value: insertValue }),
+        data: { value: insertValue },
         table: tableName
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -125,11 +125,11 @@ describe("Insert", function() {
       let insertValue = `value${Math.random()}`;
 
       await Insert.insert(conn, {
-        data: RowDataModel.create({
+        data: {
           id: 1,
           value: insertValue,
           value2: "aaa"
-        }), // Duplicate entry '1' for key 'PRIMARY'
+        }, // Duplicate entry '1' for key 'PRIMARY'
         table: tableName
       }).catch(err => {
         let errCode = Reflect.get(err, "code");

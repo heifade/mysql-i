@@ -1,5 +1,4 @@
 import { Connection } from "mysql";
-import { RowDataModel } from "./model/RowDataModel";
 import { Schema } from "./schema/Schema";
 import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
@@ -17,7 +16,7 @@ export class Update {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {{
-   *       data: RowDataModel;
+   *       data: {};
    *       database?: string;
    *       table: string;
    *     }} pars
@@ -35,17 +34,17 @@ export class Update {
    * )
    * 例1：相当于SQL update tbl1 set f3=3, f4=4 where f1=1 and f2=2
    * let result = await Update.update(conn, {
-   *    data: RowDataModel.create({ f1: 1, f2: 2, f3: 3, f4: 4 }),
+   *    data: { f1: 1, f2: 2, f3: 3, f4: 4 },
    *    table: 'tbl1'
    * });
    * 例2：相当于SQL update tbl1 set f3=3 where f1=1 and f2=2
    * let result = await Update.update(conn, {
-   *    data: RowDataModel.create({ f1: 1, f2: 2, f3: 3 }),
+   *    data: { f1: 1, f2: 2, f3: 3 },
    *    table: 'tbl1'
    * });
    * 例3：相当于SQL update tbl1 set f3=3, f4=4
    * let result = await Update.update(conn, {
-   *    data: RowDataModel.create({ f3: 3, f4: 4 }),
+   *    data: { f3: 3, f4: 4 },
    *    table: 'tbl1'
    * });
    * </pre>
@@ -53,7 +52,7 @@ export class Update {
   public static update(
     conn: Connection,
     pars: {
-      data: RowDataModel;
+      data: {};
       database?: string;
       table: string;
     }
@@ -84,18 +83,18 @@ export class Update {
 
         let fieldSQL = ` `;
         let whereSQL = ``;
-        data.keys().map((key, index) => {
+        Reflect.ownKeys(data).map((key, index) => {
           let column = tableSchemaModel.columns.filter(
             column => column.columnName === key.toString()
           )[0];
           if (column) {
             if (column.primaryKey) {
               whereSQL += ` ${column.columnName}=? and`;
-              whereList.push(data.get(column.columnName));
+              whereList.push(Reflect.get(data, column.columnName));
             } else {
               fieldSQL += ` ${column.columnName}=?,`;
 
-              dataList.push(data.get(column.columnName));
+              dataList.push(Reflect.get(data, column.columnName));
             }
           }
         });
@@ -128,8 +127,8 @@ export class Update {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {{
-   *       data: RowDataModel;
-   *       where?: RowDataModel;
+   *       data: {};
+   *       where?: {};
    *       database?: string;
    *       table: string;
    *     }} pars
@@ -139,8 +138,8 @@ export class Update {
   public static updateByWhere(
     conn: Connection,
     pars: {
-      data: RowDataModel;
-      where?: RowDataModel;
+      data: {};
+      where?: {};
       database?: string;
       table: string;
     }
@@ -171,14 +170,14 @@ export class Update {
         let dataList = new Array<any>();
 
         let fieldSQL = ` `;
-        data.keys().map((key, index) => {
+        Reflect.ownKeys(data).map((key, index) => {
           let column = tableSchemaModel.columns.filter(
             column => column.columnName === key.toString()
           )[0];
           if (column) {
             fieldSQL += ` ${column.columnName}=?,`;
 
-            dataList.push(data.get(column.columnName));
+            dataList.push(Reflect.get(data, column.columnName));
           }
         });
 

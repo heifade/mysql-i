@@ -105,8 +105,10 @@
 					<p>Save 保存数据</p>
 					<blockquote>
 						<p>save 保存一条数据</p>
-						<p>saves 保存多条数据（并发）</p>
-						<p>savesSeq 保存多条数据（顺序）</p>
+						<p>saves 保存多条数据，并发执行</p>
+						<p>savesWithTran 保存多条数据，并发执行(事务)</p>
+						<p>savesSeq 保存多条数据，顺序执行</p>
+						<p>savesSeqWithTran 保存多条数据，顺序执行(事务)</p>
 					</blockquote>
 					<p>Exec 执行SQL</p>
 					<blockquote>
@@ -192,11 +194,10 @@ run()
 				<p>例子2 插入一条数据</p>
 				<pre><code class="lang-js">...
 const Save = mysqli.Save;
-<span class="hljs-keyword">const</span> RowDataModel = mysqli.RowDataModel;
 <span class="hljs-keyword">const</span> SaveType = mysqli.SaveType;
 ...
 await Save.save(conn, {
-  <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"1"</span> }), <span class="hljs-comment">// 插入的数据{ id: 1, value: "1" }</span>
+  <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"1"</span> }, <span class="hljs-comment">// 插入的数据{ id: 1, value: "1" }</span>
   table: <span class="hljs-string">"tbl_test"</span>, <span class="hljs-comment">// 表名</span>
   saveType: SaveType.insert, <span class="hljs-comment">//插入</span>
   database: <span class="hljs-string">"test2"</span> <span class="hljs-comment">// 数据库名称，可以为空，空时为连接池提供的数据库</span>
@@ -207,7 +208,7 @@ await Save.save(conn, {
 				<p>例子3 根据主键更新一条数据</p>
 				<pre><code class="lang-js">...
 await Save.save(conn, {
-  <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"2"</span> }), <span class="hljs-comment">// 的数据{ id: 1, value: "2" }</span>
+  <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"2"</span> }, <span class="hljs-comment">// 的数据{ id: 1, value: "2" }</span>
   table: <span class="hljs-string">"tbl_test"</span>, <span class="hljs-comment">// 表名</span>
   saveType: SaveType.update, <span class="hljs-comment">//更新</span>
   database: <span class="hljs-string">"test2"</span> <span class="hljs-comment">// 数据库名称，可以为空，空时为连接池提供的数据库</span>
@@ -218,7 +219,7 @@ await Save.save(conn, {
 				<p>例子4 删除一条数据</p>
 				<pre><code class="lang-js">...
 await Save.save(conn, {
-  <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span> }), <span class="hljs-comment">// 的数据{ id: 1 }</span>
+  <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span> }, <span class="hljs-comment">// 的数据{ id: 1 }</span>
   table: <span class="hljs-string">"tbl_test"</span>, <span class="hljs-comment">// 表名</span>
   saveType: SaveType.delete, <span class="hljs-comment">//删除</span>
   database: <span class="hljs-string">"test2"</span> <span class="hljs-comment">// 数据库名称，可以为空，空时为连接池提供的数据库</span>
@@ -229,7 +230,7 @@ await Save.save(conn, {
 				<p>例子5 替换一条数据</p>
 				<pre><code class="lang-js">...
 await Save.save(conn, {
-  <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"3"</span> }), <span class="hljs-comment">// 的数据{ id: 1, value: "3" }</span>
+  <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"3"</span> }, <span class="hljs-comment">// 的数据{ id: 1, value: "3" }</span>
   table: <span class="hljs-string">"tbl_test"</span>, <span class="hljs-comment">// 表名</span>
   saveType: SaveType.replace, <span class="hljs-comment">//替换</span>
   database: <span class="hljs-string">"test2"</span> <span class="hljs-comment">// 数据库名称，可以为空，空时为连接池提供的数据库</span>
@@ -241,25 +242,25 @@ await Save.save(conn, {
 				<pre><code class="lang-js">...
 await Save.saves(conn, [
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"11"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"11"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.insert,<span class="hljs-comment">//插入</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"22"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"22"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.update, <span class="hljs-comment">//更新</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"33"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"33"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.replace,<span class="hljs-comment">//替换</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"44"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"44"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.delete, <span class="hljs-comment">//删除</span>
     database: <span class="hljs-string">"test2"</span>
@@ -271,25 +272,25 @@ await Save.saves(conn, [
 				<pre><code class="lang-js">...
 await Save.savesSeq(conn, [
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"11"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"11"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.insert,<span class="hljs-comment">//插入</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"22"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"22"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.update, <span class="hljs-comment">//更新</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"33"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"33"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.replace,<span class="hljs-comment">//替换</span>
     database: <span class="hljs-string">"test2"</span>
   },
   {
-    <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"44"</span> }),
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"44"</span> },
     <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
     <span class="hljs-attr">saveType</span>: SaveType.delete, <span class="hljs-comment">//删除</span>
     database: <span class="hljs-string">"test2"</span>
@@ -303,25 +304,25 @@ try {
   <span class="hljs-keyword">await</span> Transaction.begin(conn);
   <span class="hljs-keyword">await</span> Save.saves(conn, [
     {
-      <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"1"</span> }),
+      <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"1"</span> },
       <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
       <span class="hljs-attr">saveType</span>: SaveType.insert,
       <span class="hljs-attr">database</span>: <span class="hljs-string">"test2"</span>
     },
     {
-      <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"2"</span> }),
+      <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"2"</span> },
       <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
       <span class="hljs-attr">saveType</span>: SaveType.insert,
       <span class="hljs-attr">database</span>: <span class="hljs-string">"test2"</span>
     },
     {
-      <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"3"</span> }),
+      <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"3"</span> },
       <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
       <span class="hljs-attr">saveType</span>: SaveType.insert,
       <span class="hljs-attr">database</span>: <span class="hljs-string">"test2"</span>
     },
     {
-      <span class="hljs-attr">data</span>: RowDataModel.create({ <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"4"</span> }),
+      <span class="hljs-attr">data</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">"4"</span> },
       <span class="hljs-attr">table</span>: <span class="hljs-string">"tbl_test"</span>,
       <span class="hljs-attr">saveType</span>: SaveType.insert,
       <span class="hljs-attr">database</span>: <span class="hljs-string">"test2"</span>
@@ -363,7 +364,7 @@ result = <span class="hljs-keyword">await</span> Select.selectSplitPage(conn, {
 result = <span class="hljs-keyword">await</span> Procedure.exec(conn, {
   <span class="hljs-attr">database</span>: <span class="hljs-string">"test2"</span>,
   <span class="hljs-attr">procedure</span>: <span class="hljs-string">"p_insert2"</span>,
-  <span class="hljs-attr">data</span>: RowDataModel.create({<span class="hljs-attr">par1</span>: <span class="hljs-string">'1'</span>, <span class="hljs-attr">par2</span>: <span class="hljs-string">'2'</span>}), <span class="hljs-comment">// 参数</span>
+  <span class="hljs-attr">data</span>: {<span class="hljs-attr">par1</span>: <span class="hljs-string">'1'</span>, <span class="hljs-attr">par2</span>: <span class="hljs-string">'2'</span>}, <span class="hljs-comment">// 参数</span>
 });
 <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(result));
 ...
@@ -414,9 +415,6 @@ result = <span class="hljs-keyword">await</span> Procedure.exec(conn, {
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/AindexA.html">"index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/AmodelArowdatamodelA.html">"model/<wbr>Row<wbr>Data<wbr>Model"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/AmodelAsavetypeA.html">"model/<wbr>Save<wbr>Type"</a>

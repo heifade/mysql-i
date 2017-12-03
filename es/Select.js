@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const RowDataModel_1 = require("./model/RowDataModel");
 const SplitPageResultModel_1 = require("./model/SplitPageResultModel");
 let readListFromResult = (result) => {
     return result.map((h) => {
-        let item = new RowDataModel_1.RowDataModel();
+        let item = {};
         return Object.assign(item, h);
     });
 };
@@ -54,7 +53,7 @@ class Select {
                 }
                 else {
                     let list = readListFromResult(results);
-                    resolve(list[0].get("value"));
+                    resolve(Reflect.get(list[0], "value"));
                 }
             });
         });

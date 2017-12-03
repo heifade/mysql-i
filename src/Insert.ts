@@ -1,6 +1,5 @@
 import { Connection } from "mysql";
 import { Schema } from "./schema/Schema";
-import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 
 /**
@@ -18,7 +17,7 @@ export class Insert {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {{
-   *       data: RowDataModel;
+   *       data: {};
    *       database?: string;
    *       table: string;
    *     }} pars
@@ -34,12 +33,12 @@ export class Insert {
    * )
    * 例1，以下相当于SQL： insert into tbl1(f1, f2, f3) values(1, 2, 3);
    * let result = await Insert.insert(conn, {
-   *   data: RowDataModel.create({ f1: 1, f2: 2, f3: 3, f4: 4 }), // f4 不是字段，插入成功
+   *   data: { f1: 1, f2: 2, f3: 3, f4: 4 }, // f4 不是字段，插入成功
    *   table: 'tbl1'
    * });
    * 例2，以下相当于SQL： insert into tbl1(f1, f2) values(1, 2);
    * let result = await Insert.insert(conn, {
-   *   data: RowDataModel.create({ f1: 1, f2: 2 }), // 少一个字段f3，插入成功
+   *   data: { f1: 1, f2: 2 }, // 少一个字段f3，插入成功
    *   table: 'tbl1'
    * });
    * </pre>
@@ -47,7 +46,7 @@ export class Insert {
   public static insert(
     conn: Connection,
     pars: {
-      data: RowDataModel;
+      data: {};
       database?: string;
       table: string;
     }
@@ -78,14 +77,18 @@ export class Insert {
 
         let sql = `insert into ${tableName} set ?`;
 
-        let fieldValues = new RowDataModel();
+        let fieldValues = {};
 
-        data.keys().map((key, index) => {
+        Reflect.ownKeys(data).map((key, index) => {
           let column = tableSchemaModel.columns.filter(
             column => column.columnName === key.toString()
           )[0];
           if (column) {
-            fieldValues.set(column.columnName, data.get(column.columnName));
+            Reflect.set(
+              fieldValues,
+              column.columnName,
+              Reflect.get(data, column.columnName)
+            );
           }
         });
 

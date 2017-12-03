@@ -15,12 +15,12 @@ import { Connection } from "mysql";
  * try {
  *   await Transaction.begin(conn);
  *   await Save.save(conn, {
- *     data: RowDataModel.create({ f1: 1, f2: 2 }),
+ *     data: { f1: 1, f2: 2 },
  *     table: tableName,
  *     saveType: SaveType.insert
  *   });
  *   await Save.save(conn, {
- *     data: RowDataModel.create({ f2: 2, f2: 2 }),
+ *     data: { f2: 2, f2: 2 },
  *     table: tableName,
  *     saveType: SaveType.insert
  *   });

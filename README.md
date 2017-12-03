@@ -163,11 +163,10 @@ run()
 ```js
 ...
 const Save = mysqli.Save;
-const RowDataModel = mysqli.RowDataModel;
 const SaveType = mysqli.SaveType;
 ...
 await Save.save(conn, {
-  data: RowDataModel.create({ id: 1, value: "1" }), // 插入的数据{ id: 1, value: "1" }
+  data: { id: 1, value: "1" }, // 插入的数据{ id: 1, value: "1" }
   table: "tbl_test", // 表名
   saveType: SaveType.insert, //插入
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
@@ -181,7 +180,7 @@ await Save.save(conn, {
 ```js
 ...
 await Save.save(conn, {
-  data: RowDataModel.create({ id: 1, value: "2" }), // 的数据{ id: 1, value: "2" }
+  data: { id: 1, value: "2" }, // 的数据{ id: 1, value: "2" }
   table: "tbl_test", // 表名
   saveType: SaveType.update, //更新
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
@@ -194,7 +193,7 @@ await Save.save(conn, {
 ```js
 ...
 await Save.save(conn, {
-  data: RowDataModel.create({ id: 1 }), // 的数据{ id: 1 }
+  data: { id: 1 }, // 的数据{ id: 1 }
   table: "tbl_test", // 表名
   saveType: SaveType.delete, //删除
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
@@ -207,7 +206,7 @@ await Save.save(conn, {
 ```js
 ...
 await Save.save(conn, {
-  data: RowDataModel.create({ id: 1, value: "3" }), // 的数据{ id: 1, value: "3" }
+  data: { id: 1, value: "3" }, // 的数据{ id: 1, value: "3" }
   table: "tbl_test", // 表名
   saveType: SaveType.replace, //替换
   database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
@@ -222,25 +221,25 @@ await Save.save(conn, {
 ...
 await Save.saves(conn, [
   {
-    data: RowDataModel.create({ id: 1, value: "11" }),
+    data: { id: 1, value: "11" },
     table: "tbl_test",
     saveType: SaveType.insert,//插入
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 2, value: "22" }),
+    data: { id: 2, value: "22" },
     table: "tbl_test",
     saveType: SaveType.update, //更新
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 3, value: "33" }),
+    data: { id: 3, value: "33" },
     table: "tbl_test",
     saveType: SaveType.replace,//替换
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 4, value: "44" }),
+    data: { id: 4, value: "44" },
     table: "tbl_test",
     saveType: SaveType.delete, //删除
     database: "test2"
@@ -254,25 +253,25 @@ await Save.saves(conn, [
 ...
 await Save.savesSeq(conn, [
   {
-    data: RowDataModel.create({ id: 1, value: "11" }),
+    data: { id: 1, value: "11" },
     table: "tbl_test",
     saveType: SaveType.insert,//插入
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 2, value: "22" }),
+    data: { id: 2, value: "22" },
     table: "tbl_test",
     saveType: SaveType.update, //更新
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 3, value: "33" }),
+    data: { id: 3, value: "33" },
     table: "tbl_test",
     saveType: SaveType.replace,//替换
     database: "test2"
   },
   {
-    data: RowDataModel.create({ id: 4, value: "44" }),
+    data: { id: 4, value: "44" },
     table: "tbl_test",
     saveType: SaveType.delete, //删除
     database: "test2"
@@ -288,25 +287,25 @@ try {
   await Transaction.begin(conn);
   await Save.saves(conn, [
     {
-      data: RowDataModel.create({ id: 1, value: "1" }),
+      data: { id: 1, value: "1" },
       table: "tbl_test",
       saveType: SaveType.insert,
       database: "test2"
     },
     {
-      data: RowDataModel.create({ id: 2, value: "2" }),
+      data: { id: 2, value: "2" },
       table: "tbl_test",
       saveType: SaveType.insert,
       database: "test2"
     },
     {
-      data: RowDataModel.create({ id: 3, value: "3" }),
+      data: { id: 3, value: "3" },
       table: "tbl_test",
       saveType: SaveType.insert,
       database: "test2"
     },
     {
-      data: RowDataModel.create({ id: 4, value: "4" }),
+      data: { id: 4, value: "4" },
       table: "tbl_test",
       saveType: SaveType.insert,
       database: "test2"
@@ -352,7 +351,7 @@ console.log(result);
 result = await Procedure.exec(conn, {
   database: "test2",
   procedure: "p_insert2",
-  data: RowDataModel.create({par1: '1', par2: '2'}), // 参数
+  data: {par1: '1', par2: '2'}, // 参数
 });
 console.log(JSON.stringify(result));
 ...

@@ -1,6 +1,5 @@
 import { Connection } from "mysql";
 import { Schema } from "./schema/Schema";
-import { RowDataModel } from "./model/RowDataModel";
 import { Utils } from "./util/Utils";
 
 /**
@@ -19,7 +18,7 @@ export class Replace {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {{
-   *       data: RowDataModel;
+   *       data: {};
    *       database?: string;
    *       table: string;
    *     }} pars
@@ -37,7 +36,7 @@ export class Replace {
    * 当存在 f1 = 1的数据时，相当于update tbl1 set f2=2,f3=3 where f1=1
    * 当不存在f1= 1的数据时，相当于insert into tbl1(f1,f2,f3) values(1,2,3)
    * let result = await Replace.replace(conn, {
-   *   data: RowDataModel.create({ f1: 1, f2: 2, f3: 3 }),
+   *   data: { f1: 1, f2: 2, f3: 3 },
    *   table: 'tbl1'
    * });
    * </pre>
@@ -45,7 +44,7 @@ export class Replace {
   public static replace(
     conn: Connection,
     pars: {
-      data: RowDataModel;
+      data: {};
       database?: string;
       table: string;
     }
@@ -75,14 +74,18 @@ export class Replace {
 
         let sql = `replace into ${tableName} set ?`;
 
-        let fieldValues = new RowDataModel();
+        let fieldValues = {};
 
-        data.keys().map((key, index) => {
+        Reflect.ownKeys(data).map((key, index) => {
           let column = tableSchemaModel.columns.filter(
             column => column.columnName === key.toString()
           )[0];
           if (column) {
-            fieldValues.set(column.columnName, data.get(column.columnName));
+            Reflect.set(
+              fieldValues,
+              column.columnName,
+              Reflect.get(data, column.columnName)
+            );
           }
         });
 

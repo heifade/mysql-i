@@ -2,13 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
 import { PoolConnection, Connection } from "mysql";
-import {
-  ConnectionHelper,
-  Save,
-  RowDataModel,
-  Select,
-  SaveType
-} from "../src/index";
+import { ConnectionHelper, Save, Select, SaveType } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
 describe("Save", function() {
@@ -36,7 +30,7 @@ describe("Save", function() {
       let insertValue = `value${Math.random()}`;
 
       await Save.save(conn, {
-        data: RowDataModel.create({ id: 10, value: insertValue }),
+        data: { id: 10, value: insertValue },
         table: tableName,
         saveType: SaveType.insert
       });
@@ -45,11 +39,11 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [10]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       insertValue = `value${Math.random()}_new1`;
       await Save.save(conn, {
-        data: RowDataModel.create({ id: 10, value: insertValue }),
+        data: { id: 10, value: insertValue },
         table: tableName,
         saveType: SaveType.update
       });
@@ -58,10 +52,10 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [10]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       await Save.save(conn, {
-        data: RowDataModel.create({ id: 9 }),
+        data: { id: 9 },
         table: tableName,
         saveType: SaveType.delete
       });
@@ -74,7 +68,7 @@ describe("Save", function() {
 
       insertValue = `value${Math.random()}_new3`;
       await Save.save(conn, {
-        data: RowDataModel.create({ id: 8, value: insertValue }),
+        data: { id: 8, value: insertValue },
         table: tableName,
         saveType: SaveType.replace
       });
@@ -83,7 +77,7 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [8]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -101,17 +95,17 @@ describe("Save", function() {
 
       await Save.saves(conn, [
         {
-          data: RowDataModel.create({ id: 11, value: insertValue }),
+          data: { id: 11, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         },
         {
-          data: RowDataModel.create({ id: 111, value: insertValue }),
+          data: { id: 111, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         },
         {
-          data: RowDataModel.create({ id: 112, value: insertValue }),
+          data: { id: 112, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         }
@@ -121,12 +115,12 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [11]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       insertValue = `value${Math.random()}_new1`;
       await Save.saves(conn, [
         {
-          data: RowDataModel.create({ id: 11, value: insertValue }),
+          data: { id: 11, value: insertValue },
           table: tableName,
           saveType: SaveType.update
         }
@@ -136,11 +130,11 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [11]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       await Save.saves(conn, [
         {
-          data: RowDataModel.create({ id: 7 }),
+          data: { id: 7 },
           table: tableName,
           saveType: SaveType.delete
         }
@@ -155,7 +149,7 @@ describe("Save", function() {
       insertValue = `value${Math.random()}_new3`;
       await Save.saves(conn, [
         {
-          data: RowDataModel.create({ id: 6, value: insertValue }),
+          data: { id: 6, value: insertValue },
           table: tableName,
           saveType: SaveType.replace
         }
@@ -165,13 +159,13 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [6]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       // 插入重复键时报错
       insertValue = `value${Math.random()}_new3`;
       await Save.saves(conn, [
         {
-          data: RowDataModel.create({ id: 6, value: insertValue }),
+          data: { id: 6, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         }
@@ -196,17 +190,17 @@ describe("Save", function() {
 
       await Save.savesSeq(conn, [
         {
-          data: RowDataModel.create({ id: 12, value: insertValue }),
+          data: { id: 12, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         },
         {
-          data: RowDataModel.create({ id: 121, value: insertValue }),
+          data: { id: 121, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         },
         {
-          data: RowDataModel.create({ id: 122, value: insertValue }),
+          data: { id: 122, value: insertValue },
           table: tableName,
           saveType: SaveType.insert
         }
@@ -216,12 +210,12 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [12]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       insertValue = `value${Math.random()}_new1`;
       await Save.savesSeq(conn, [
         {
-          data: RowDataModel.create({ id: 12, value: insertValue }),
+          data: { id: 12, value: insertValue },
           table: tableName,
           saveType: SaveType.update
         }
@@ -231,11 +225,11 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [12]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       await Save.savesSeq(conn, [
         {
-          data: RowDataModel.create({ id: 5 }),
+          data: { id: 5 },
           table: tableName,
           saveType: SaveType.delete
         }
@@ -250,7 +244,7 @@ describe("Save", function() {
       insertValue = `value${Math.random()}_new3`;
       await Save.savesSeq(conn, [
         {
-          data: RowDataModel.create({ id: 4, value: insertValue }),
+          data: { id: 4, value: insertValue },
           table: tableName,
           saveType: SaveType.replace
         }
@@ -260,7 +254,7 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [4]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -279,12 +273,12 @@ describe("Save", function() {
       try {
         await Save.savesSeq(conn, [
           {
-            data: RowDataModel.create({ id: 200, value: insertValue }),
+            data: { id: 200, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           },
           {
-            data: RowDataModel.create({ id: 200, value: insertValue }),
+            data: { id: 200, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           }
@@ -298,7 +292,7 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [200]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -317,12 +311,12 @@ describe("Save", function() {
       try {
         await Save.savesWithTran(conn, [
           {
-            data: RowDataModel.create({ id: 300, value: insertValue }),
+            data: { id: 300, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           },
           {
-            data: RowDataModel.create({ id: 301, value: insertValue }),
+            data: { id: 301, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           }
@@ -340,7 +334,7 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [301]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -359,12 +353,12 @@ describe("Save", function() {
       try {
         await Save.savesWithTran(conn, [
           {
-            data: RowDataModel.create({ id: 302, value: insertValue }),
+            data: { id: 302, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           },
           {
-            data: RowDataModel.create({ id: 302, value: insertValue }),
+            data: { id: 302, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           }
@@ -397,12 +391,12 @@ describe("Save", function() {
       try {
         await Save.savesSeqWithTran(conn, [
           {
-            data: RowDataModel.create({ id: 400, value: insertValue }),
+            data: { id: 400, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           },
           {
-            data: RowDataModel.create({ id: 401, value: insertValue }),
+            data: { id: 401, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           }
@@ -416,13 +410,13 @@ describe("Save", function() {
         sql: `select value from ${tableName} where id=?`,
         where: [400]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
       rowData = await Select.selectTop1(conn, {
         sql: `select value from ${tableName} where id=?`,
         where: [401]
       });
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -441,12 +435,12 @@ describe("Save", function() {
       try {
         await Save.savesSeqWithTran(conn, [
           {
-            data: RowDataModel.create({ id: 402, value: insertValue }),
+            data: { id: 402, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           },
           {
-            data: RowDataModel.create({ id: 402, value: insertValue }),
+            data: { id: 402, value: insertValue },
             table: tableName,
             saveType: SaveType.insert
           }

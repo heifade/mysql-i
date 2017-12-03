@@ -114,13 +114,13 @@
 					<a name="select" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> select</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, param<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, param<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Select.ts#L44">Select.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Select.ts#L43">Select.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -143,8 +143,8 @@ create table tbl1 (
 )
 例1：
 let list = await Select.select(conn, {
-  sql: `select * from tbl1 where id=?`,
-  where: [1]
+  sql: `select * from tbl1 where f1=? and f2=?`,
+  where: [1, 2]
 });
 </pre>
 									</dd>
@@ -165,7 +165,7 @@ let list = await Select.select(conn, {
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Promise对象</p>
 						</li>
 					</ul>
@@ -180,7 +180,7 @@ let list = await Select.select(conn, {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Select.ts#L150">Select.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Select.ts#L149">Select.ts:149</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -199,7 +199,7 @@ create table tbl1 (
  f3 int
 )
 let result = await Select.selectCount(conn, {
-  sql: `select * from tbl1 where id=?`,
+  sql: `select * from tbl1 where f1=?`,
   where: [1]
 });
 </pre>
@@ -236,7 +236,7 @@ let result = await Select.selectCount(conn, {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Select.ts#L188">Select.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Select.ts#L187">Select.ts:187</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -255,7 +255,7 @@ create table tbl1 (
  f3 int
 )
 let result = await Select.selectSplitPage(conn, {
-  sql: `select * from tbl1 where id=?`,
+  sql: `select * from tbl1 where f1=?`,
   where: [1],
   pageSize: 10,
   index: 0
@@ -288,13 +288,13 @@ let result = await Select.selectSplitPage(conn, {
 					<a name="selecttop1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> select<wbr>Top1</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">select<wbr>Top1<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, param<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select<wbr>Top1<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, param<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Select.ts#L118">Select.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Select.ts#L117">Select.ts:117</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +315,7 @@ create table tbl1 (
  f3 int
 )
 let result = await Select.selectTop1(conn, {
-  sql: `select * from tbl1 where id=?`,
+  sql: `select * from tbl1 where f1=?`,
   where: [1]
 });
 </pre>
@@ -337,7 +337,7 @@ let result = await Select.selectTop1(conn, {
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Promise对象</p>
 						</li>
 					</ul>
@@ -346,13 +346,13 @@ let result = await Select.selectTop1(conn, {
 					<a name="selects" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> selects</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">selects<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, params<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">selects<span class="tsd-signature-symbol">(</span>conn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Connection</span>, params<span class="tsd-signature-symbol">: </span><a href="AmodelAselectparamsmodelA.selectparamsmodel.html" class="tsd-signature-type">SelectParamsModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/99d7fdc/src/Select.ts#L82">Select.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/heifade/mysql-i/blob/b2d96c4/src/Select.ts#L81">Select.ts:81</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -375,10 +375,10 @@ create table tbl1 (
 )
 例1：
 let list = await Select.selects(conn, [{
-  sql: `select * from tbl1 where id=?`,
+  sql: `select * from tbl1 where f1=?`,
   where: [1]
  }, {
-  sql: `select * from tbl1 where id=?`,
+  sql: `select * from tbl1 where f1=?`,
   where: [2]
 }]);
 </pre>
@@ -400,7 +400,7 @@ let list = await Select.selects(conn, [{
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="AmodelArowdatamodelA.rowdatamodel.html" class="tsd-signature-type">RowDataModel</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Promise对象</p>
 						</li>
 					</ul>
@@ -451,9 +451,6 @@ let list = await Select.selects(conn, [{
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/AindexA.html">"index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/AmodelArowdatamodelA.html">"model/<wbr>Row<wbr>Data<wbr>Model"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/AmodelAsavetypeA.html">"model/<wbr>Save<wbr>Type"</a>

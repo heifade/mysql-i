@@ -1,12 +1,11 @@
 import { Connection, Query, MysqlError, FieldInfo } from "mysql";
-import { RowDataModel } from "./model/RowDataModel";
 import { SelectParamsModel } from "./model/SelectParamsModel";
 import { SplitPageParamsModel } from "./model/SplitPageParamsModel";
 import { SplitPageResultModel } from "./model/SplitPageResultModel";
 
 let readListFromResult = (result: any) => {
   return result.map((h: any) => {
-    let item = new RowDataModel();
+    let item = {};
     return Object.assign(item, h);
   });
 };
@@ -42,7 +41,7 @@ export class Select {
    * </pre>
    */
   public static select(conn: Connection, param: SelectParamsModel) {
-    return new Promise<RowDataModel[]>((resolve, reject) => {
+    return new Promise<{}[]>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
         if (err) {
           reject(err);
@@ -80,8 +79,8 @@ export class Select {
    * </pre>
    */
   public static selects(conn: Connection, params: SelectParamsModel[]) {
-    return new Promise<RowDataModel[][]>((resolve, reject) => {
-      let promises = new Array<Promise<RowDataModel[]>>();
+    return new Promise<{}[][]>((resolve, reject) => {
+      let promises = new Array<Promise<{}[]>>();
 
       params.map(param => {
         let p = Select.select(conn, param);
@@ -116,7 +115,7 @@ export class Select {
    * </pre>
    */
   public static selectTop1(conn: Connection, param: SelectParamsModel) {
-    return new Promise<RowDataModel>((resolve, reject) => {
+    return new Promise<{}>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
         if (err) {
           reject(err);
@@ -157,7 +156,7 @@ export class Select {
         } else {
           let list = readListFromResult(results);
 
-          resolve(list[0].get("value"));
+          resolve(Reflect.get(list[0], "value"));
         }
       });
     });

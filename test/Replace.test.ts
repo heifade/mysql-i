@@ -3,7 +3,7 @@ import "mocha";
 import { connectionConfig } from "./connectionConfig";
 import { initTable } from "./DataInit";
 import { PoolConnection, Connection } from "mysql";
-import { ConnectionHelper, Replace, RowDataModel, Select } from "../src/index";
+import { ConnectionHelper, Replace, Select } from "../src/index";
 
 describe("Replace", function() {
   let tableName = "tbl_test_replace";
@@ -29,7 +29,7 @@ describe("Replace", function() {
       let insertValue = `value${Math.random()}`;
 
       let result = await Replace.replace(conn, {
-        data: RowDataModel.create({ id: 1, value: insertValue }),
+        data: { id: 1, value: insertValue },
         table: tableName
       });
 
@@ -39,7 +39,7 @@ describe("Replace", function() {
       });
 
       expect(rowData != null).to.be.true;
-      expect(rowData.get("value")).to.equal(insertValue);
+      expect(Reflect.get(rowData, "value")).to.equal(insertValue);
     };
 
     asyncFunc()
@@ -76,7 +76,7 @@ describe("Replace", function() {
       let insertValue = `value${Math.random()}`;
 
       await Replace.replace(conn, {
-        data: RowDataModel.create({ value: insertValue }),
+        data: { value: insertValue },
         table: null
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -100,7 +100,7 @@ describe("Replace", function() {
       let tableName = `tbl_not_exists`;
 
       await Replace.replace(conn, {
-        data: RowDataModel.create({ value: insertValue }),
+        data: { value: insertValue },
         table: tableName
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -122,11 +122,11 @@ describe("Replace", function() {
       let insertValue = `123456789012345678901234567890123456789012345678901234567890`;
 
       await Replace.replace(conn, {
-        data: RowDataModel.create({
+        data: {
           id: 1,
           value: insertValue,
           value2: "aaa"
-        }),
+        },
         table: tableName
       }).catch(err => {
         let errCode = Reflect.get(err, "code");

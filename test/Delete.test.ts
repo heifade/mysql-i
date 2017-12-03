@@ -1,4 +1,4 @@
-import { Delete, ConnectionHelper, RowDataModel, Select } from "../src/index";
+import { Delete, ConnectionHelper, Select } from "../src/index";
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
@@ -34,7 +34,7 @@ describe("Delete", function() {
       expect(count).to.equal(1);
 
       await Delete.delete(conn, {
-        where: RowDataModel.create({ id: 1 }),
+        where: { id: 1 },
         table: tableName
       });
 
@@ -57,7 +57,7 @@ describe("Delete", function() {
   it("when pars.table is null", done => {
     let asyncFunc = async function() {
       await Delete.delete(conn, {
-        where: RowDataModel.create({ id: 1 }),
+        where: { id: 1 },
         table: null
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -81,7 +81,7 @@ describe("Delete", function() {
       let tableName = `tbl_not_exists`;
 
       await Delete.delete(conn, {
-        where: RowDataModel.create({ id: 1 }),
+        where: { id: 1 },
         table: tableName
       }).catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -101,7 +101,7 @@ describe("Delete", function() {
   it("when error", done => {
     let asyncFunc = async function() {
       await Delete.delete(conn, {
-        where: RowDataModel.create({ id: "Hellow" }),
+        where: { id: "Hellow" },
         table: tableName
       }).catch(err => {
         let errCode = Reflect.get(err, "code");

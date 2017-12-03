@@ -2,14 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import { PoolConnection, Connection } from "mysql";
 import { initTable } from "./DataInit";
-import {
-  Schema,
-  RowDataModel,
-  Utils,
-  Exec,
-  Where,
-  ConnectionHelper
-} from "../src/index";
+import { Schema, Utils, Exec, Where, ConnectionHelper } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
 describe("Other", function() {
@@ -51,21 +44,6 @@ describe("Other", function() {
     });
   });
 
-  it("RowDataModel.has", done => {
-    let asyncFunc = async function() {
-      let row = RowDataModel.create({ id: 1 });
-      expect(row.has("id")).to.be.true;
-    };
-
-    asyncFunc()
-      .then(() => {
-        done();
-      })
-      .catch(err => {
-        done(err);
-      });
-  });
-
   it("Utils.getDbObjectName", done => {
     let asyncFunc = async function() {
       let value = Utils.getDbObjectName("a", "b");
@@ -90,7 +68,7 @@ describe("Other", function() {
         let tableSchemaModel = schemaModel.getTableSchemaModel(tableName);
 
         let { whereSQL: whereSQL1, whereList: whereList1 } = Where.getWhereSQL(
-          RowDataModel.create({ id1: 1, id2: 2 }),
+          { id1: 1, id2: 2 },
           tableSchemaModel
         );
 
@@ -111,7 +89,7 @@ describe("Other", function() {
         expect(whereList2 != null && whereList2.length == 0).to.be.true;
 
         let { whereSQL: whereSQL3, whereList: whereList3 } = Where.getWhereSQL(
-          RowDataModel.create({ id1: 1, id2: 2, id3: 3 }),
+          { id1: 1, id2: 2, id3: 3 },
           tableSchemaModel
         );
 
