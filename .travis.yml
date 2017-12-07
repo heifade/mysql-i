@@ -6,7 +6,7 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 script :
-  - "npm test"
+  # - "npm test"
   - "npm run build"
 after_script:
   - "npm run test-nyc"
@@ -24,8 +24,8 @@ deploy:
       repo: heifade/mysql-i
   - provider: pages
     skip_cleanup: true
-    github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
-    local_dir: build
+    github_token: $GITHUB_TOKEN
+    # local_dir: build
     on:
       branch: master
 
