@@ -9,21 +9,21 @@ before_install:
 script :
   # - "npm test"
   - "npm run build"
-after_script:
-  - "npm run test-nyc"
+# after_script:
+#   - "npm run test-nyc"
 
 cache:
   directories:
   - node_modules
 
 deploy:
-  - provider: npm
-    skip_cleanup: true
-    email: heifade@126.com
-    api_key: $NPM_TOKEN
-    on:
-      tags: true
-      repo: heifade/mysql-i
+  # - provider: npm
+  #   skip_cleanup: true
+  #   email: heifade@126.com
+  #   api_key: $NPM_TOKEN
+  #   on:
+  #     branch: master
+  #     repo: heifade/mysql-i
   - provider: pages
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
