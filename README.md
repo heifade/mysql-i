@@ -5,8 +5,8 @@ mysql-i
 
 [![NPM version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][npm-url]
-[![Build](https://travis-ci.org/heifade/mysql-i.svg)](https://travis-ci.org/heifade/mysql-i)
-[![Test Coverage](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg)](https://coveralls.io/github/heifade/mysql-i?branch=master)
+[![Build](https://travis-ci.org/heifade/mysql-i.svg?branch=master)](https://travis-ci.org/heifade/mysql-i)
+[![Test Coverage](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/github/heifade/mysql-i?branch=master)
 
 
 
