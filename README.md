@@ -113,30 +113,26 @@ mysql-i的主要特点：
 
 
 # 例子
-例子1 创建一个数据库test2，创建一张表tbl_test
+例子1 创建一张表tbl_test
 ```js
 const mysqli = require("mysql-i");
+const { ConnectionHelper, Exec } = mysqli;
 async function run() {
   let conn;
   try {
     // 第一步：创建连接
-    conn = await mysqli.ConnectionHelper.create({
+    conn = await ConnectionHelper.create({
       host: "localhost",
-      user: "travis",
+      user: "",
       password: "",
       database: "test",
       port: 3306
     });
 
-    // 第二步：执行创建数据库的SQL
-    await mysqli.Exec.exec(
+    // 第二步：执行创建表的SQL
+    await Exec.exec(
       conn,
-      "create database if not exists test2 default character set utf8 collate utf8_general_ci"
-    );
-    // 第三步：执行创建表的SQL
-    await mysqli.Exec.exec(
-      conn,
-      `create table if not exists test2.tbl_test (
+      `create table if not exists tbl_test (
         id int not null primary key,
         value varchar(255)
       )`
@@ -144,8 +140,8 @@ async function run() {
   } catch (err) {
     throw err;
   } finally {
-    // 第四步：关闭连接
-    await mysqli.ConnectionHelper.close(conn); // conn 可以为空，空时不报错
+    // 第三步：关闭连接
+    await ConnectionHelper.close(conn); // conn 可以为空，空时不报错
   }
 }
 
@@ -162,45 +158,42 @@ run()
 例子2 插入一条数据
 ```js
 ...
-const Save = mysqli.Save;
-const SaveType = mysqli.SaveType;
+const mysqli = require("mysql-i");
+const { Save, SaveType, ConnectionHelper } = mysqli;
 ...
 await Save.save(conn, {
-  data: { id: 1, value: "1" }, // 插入的数据{ id: 1, value: "1" }
-  table: "tbl_test", // 表名
-  saveType: SaveType.insert, //插入
-  database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
+  data: { id: 1, value: "1" }, // 插入的数据{ id: 1, value: "1" }
+  table: "tbl_test", // 表名
+  saveType: SaveType.insert //插入
 });
 ...
 ```
-此操作相当于执行SQL： insert into test2.tbl_test(id, value) values(1, '1');
+此操作相当于执行SQL： insert into tbl_test(id, value) values(1, '1');
 
 
 例子3 根据主键更新一条数据
 ```js
 ...
 await Save.save(conn, {
-  data: { id: 1, value: "2" }, // 的数据{ id: 1, value: "2" }
-  table: "tbl_test", // 表名
-  saveType: SaveType.update, //更新
-  database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
+  data: { id: 1, value: "2" }, // 的数据{ id: 1, value: "2" }
+  table: "tbl_test", // 表名
+  saveType: SaveType.update //更新
 });
 ...
 ```
-此操作相当于执行SQL： update test2.tbl_test set value value='2' where id = 1;
+此操作相当于执行SQL： update tbl_test set value value='2' where id = 1;
 
 例子4 删除一条数据
 ```js
 ...
 await Save.save(conn, {
-  data: { id: 1 }, // 的数据{ id: 1 }
-  table: "tbl_test", // 表名
-  saveType: SaveType.delete, //删除
-  database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
+  data: { id: 1 }, // 的数据{ id: 1 }
+  table: "tbl_test", // 表名
+  saveType: SaveType.delete //删除
 });
 ...
 ```
-此操作相当于执行SQL： delete from test2.tbl_test where id = 1;
+此操作相当于执行SQL： delete from tbl_test where id = 1;
 
 例子5 替换一条数据
 ```js
@@ -208,12 +201,11 @@ await Save.save(conn, {
 await Save.save(conn, {
   data: { id: 1, value: "3" }, // 的数据{ id: 1, value: "3" }
   table: "tbl_test", // 表名
-  saveType: SaveType.replace, //替换
-  database: "test2" // 数据库名称，可以为空，空时为连接池提供的数据库
+  saveType: SaveType.replace //替换
 });
 ...
 ```
-此操作相当于执行SQL： replace into test2.tbl_test(id, value) values(1, '2');
+此操作相当于执行SQL： replace into tbl_test(id, value) values(1, '2');
 
 
 例子6 多条数据并发操作
@@ -223,26 +215,22 @@ await Save.saves(conn, [
   {
     data: { id: 1, value: "11" },
     table: "tbl_test",
-    saveType: SaveType.insert,//插入
-    database: "test2"
+    saveType: SaveType.insert //插入
   },
   {
     data: { id: 2, value: "22" },
     table: "tbl_test",
-    saveType: SaveType.update, //更新
-    database: "test2"
+    saveType: SaveType.update //更新
   },
   {
     data: { id: 3, value: "33" },
     table: "tbl_test",
-    saveType: SaveType.replace,//替换
-    database: "test2"
+    saveType: SaveType.replace //替换
   },
   {
-    data: { id: 4, value: "44" },
+    data: { id: 4 },
     table: "tbl_test",
-    saveType: SaveType.delete, //删除
-    database: "test2"
+    saveType: SaveType.delete //删除
   }
 ]);
 ...
@@ -255,26 +243,22 @@ await Save.savesSeq(conn, [
   {
     data: { id: 1, value: "11" },
     table: "tbl_test",
-    saveType: SaveType.insert,//插入
-    database: "test2"
+    saveType: SaveType.insert //插入
   },
   {
     data: { id: 2, value: "22" },
     table: "tbl_test",
-    saveType: SaveType.update, //更新
-    database: "test2"
+    saveType: SaveType.update //更新
   },
   {
     data: { id: 3, value: "33" },
     table: "tbl_test",
-    saveType: SaveType.replace,//替换
-    database: "test2"
+    saveType: SaveType.replace //替换
   },
   {
-    data: { id: 4, value: "44" },
+    data: { id: 4 },
     table: "tbl_test",
-    saveType: SaveType.delete, //删除
-    database: "test2"
+    saveType: SaveType.delete //删除
   }
 ]);
 ...
@@ -282,6 +266,8 @@ await Save.savesSeq(conn, [
 
 例子8 事务操作
 ```js
+const mysqli = require("mysql-i");
+const { Save, SaveType, Transaction } = mysqli;
 ...
 try {
   await Transaction.begin(conn);
@@ -289,26 +275,22 @@ try {
     {
       data: { id: 1, value: "1" },
       table: "tbl_test",
-      saveType: SaveType.insert,
-      database: "test2"
+      saveType: SaveType.insert
     },
     {
       data: { id: 2, value: "2" },
       table: "tbl_test",
-      saveType: SaveType.insert,
-      database: "test2"
+      saveType: SaveType.insert
     },
     {
       data: { id: 3, value: "3" },
       table: "tbl_test",
-      saveType: SaveType.insert,
-      database: "test2"
+      saveType: SaveType.insert
     },
     {
       data: { id: 4, value: "4" },
       table: "tbl_test",
-      saveType: SaveType.insert,
-      database: "test2"
+      saveType: SaveType.insert
     }
   ]);
   await Transaction.commit(conn);
@@ -320,26 +302,26 @@ try {
 
 例子9 查询
 ```js
-...
-const Select = mysqli.Select;
+const mysqli = require("mysql-i");
+const { Select } = mysqli;
 ...
 let result = await Select.select(conn, {
-  sql: "select * from test2.tbl_test where id=?", //SQL语句
-  where: ['1'] // 条件
+  sql: "select * from tbl_test where id=?", //SQL语句
+  where: ["1"] // 条件
 });
 console.log(result);
 
 result = await Select.selects(conn, [
-  { sql: "select * from test2.tbl_test where id = ?", where: ['1'] },
-  { sql: "select * from test2.tbl_test where value like '%1%'" }
+  { sql: "select * from tbl_test where id = ?", where: ["1"] },
+  { sql: "select * from tbl_test where value like '%1%'" }
 ]);
 console.log(result);
 
 result = await Select.selectSplitPage(conn, {
-  sql: "select * from test2.tbl_test where id=?",
-  where: [1], // 条件
-  pageSize: 2,
-  index: 1,
+  sql: "select * from tbl_test where id=?",
+  where: [1], // 条件
+  pageSize: 2,
+  index: 1
 });
 console.log(result);
 ...
@@ -347,10 +329,11 @@ console.log(result);
 
 例子10 执行存储过程
 ```js
+const mysqli = require("mysql-i");
+const { Procedure } = mysqli;
 ...
-result = await Procedure.exec(conn, {
-  database: "test2",
-  procedure: "p_insert2",
+let result = await Procedure.exec(conn, {
+  procedure: "p_insert",
   data: {par1: '1', par2: '2'}, // 参数
 });
 console.log(JSON.stringify(result));
