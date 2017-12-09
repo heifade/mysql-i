@@ -7,10 +7,10 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 script :
-  - "npm test"
-  - "npm run build"
+  - npm test
+  - npm run build
 after_script:
-  - "npm run test-nyc"
+  - npm run test-nyc
 
 cache:
   directories:
