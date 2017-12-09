@@ -1,19 +1,14 @@
 mysql-i
 =======
 
-
-
 [![NPM version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][npm-url]
-[![Build](https://travis-ci.org/heifade/mysql-i.svg?branch=master)](https://travis-ci.org/heifade/mysql-i?branch=master)
-[![Test Coverage](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/github/heifade/mysql-i?branch=master)
-
-
+[![Build Status](https://travis-ci.org/heifade/mysql-i.svg?branch=master)](https://travis-ci.org/heifade/mysql-i)
+[![Coverage Status](https://coveralls.io/repos/github/heifade/mysql-i/badge.svg?branch=master)](https://coveralls.io/github/heifade/mysql-i?branch=master)
 
 [npm-image]: https://img.shields.io/npm/v/mysql-i.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/mysql-i
 [downloads-image]: https://img.shields.io/npm/dm/mysql-i.svg
-
 
 # 源代码及文档
 [源代码](https://github.com/heifade/mysql-i)
