@@ -250,7 +250,7 @@ export class Save {
    *     }>} list
    * @memberof Save
    */
-  public static async savesSeqWithTran(
+  public static savesSeqWithTran(
     conn: Connection,
     list: Array<{
       data: {};
