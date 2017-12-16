@@ -127,7 +127,7 @@ export class Save {
    * @returns Promise对象
    * @memberof Save
    */
-  public static saves(
+  public static async saves(
     conn: Connection,
     list: Array<{
       data: {};
@@ -136,28 +136,20 @@ export class Save {
       saveType: SaveType;
     }>
   ) {
-    return new Promise((resolve, reject) => {
-      let promiseList = new Array<Promise<any>>();
+    let promiseList = new Array<Promise<any>>();
 
-      list.map(h => {
-        promiseList.push(
-          Save.save(conn, {
-            data: h.data,
-            database: h.database,
-            table: h.table,
-            saveType: h.saveType
-          })
-        );
-      });
-
-      Promise.all(promiseList)
-        .then(result => {
-          resolve(result);
+    list.map(h => {
+      promiseList.push(
+        Save.save(conn, {
+          data: h.data,
+          database: h.database,
+          table: h.table,
+          saveType: h.saveType
         })
-        .catch(err => {
-          reject(err);
-        });
+      );
     });
+
+    return Promise.all(promiseList);
   }
 
   /**

@@ -289,7 +289,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [301]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData != null && Reflect.get(rowData, "value") === insertValue).to.be.true;
   });
 
   it("savesWithTran err", async () => {
@@ -308,9 +308,9 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
+      expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      expect(err.code).to.equal(`ER_DUP_ENTRY`);
     }
 
     let rowData = await Select.selectTop1(conn, {
@@ -370,6 +370,7 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
+      expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
       let errCode = Reflect.get(err, "code");
       expect(errCode).to.equal(`ER_DUP_ENTRY`);
