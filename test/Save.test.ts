@@ -277,8 +277,7 @@ describe("Save", function() {
         }
       ]);
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      expect(err).not.to.be.null;
     }
 
     let rowData = await Select.selectTop1(conn, {
@@ -310,7 +309,7 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
-      expect(err.code).to.equal(`ER_DUP_ENTRY`);
+      expect(err).not.to.be.null;
     }
 
     let rowData = await Select.selectTop1(conn, {
@@ -372,8 +371,7 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      expect(err).not.to.be.null;
     }
 
     let rowData = await Select.selectTop1(conn, {
