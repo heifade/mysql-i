@@ -87,6 +87,8 @@ export class Delete {
 
         let sql = `delete from ${tableName} ${whereSQL}`;
 
+        console.log(1, sql);
+
         conn.query(sql, whereList, (err2, result) => {
           if (err2) {
             reject(err2);
