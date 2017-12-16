@@ -69,7 +69,7 @@ export class Insert {
         let tableSchemaModel = schemaModel.getTableSchemaModel(table);
 
         if (!tableSchemaModel) {
-          reject(new Error(`table '${table}' is not exists!`));
+          reject(new Error(`Table '${table}' is not exists!`));
           return;
         }
 

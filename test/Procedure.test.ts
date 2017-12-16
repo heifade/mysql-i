@@ -90,7 +90,7 @@ describe("Procedure", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`procedure '${procedureName}' is not exists!`);
+        expect(errMsg).to.equal(`Procedure '${procedureName}' is not exists!`);
       });
   });
 

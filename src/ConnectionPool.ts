@@ -1,11 +1,4 @@
-import {
-  PoolConfig,
-  Pool,
-  PoolConnection,
-  MysqlError,
-  createPool,
-  Connection
-} from "mysql";
+import { PoolConfig, Pool, PoolConnection, MysqlError, createPool, Connection } from "mysql";
 import { GlobalCache } from "./global/GlobalCache";
 
 /**
@@ -73,15 +66,13 @@ export class ConnectionPool {
    */
   public static getConnection() {
     return new Promise<PoolConnection>((resolve, reject) => {
-      ConnectionPool.getPool().getConnection(
-        (err: MysqlError, conn: PoolConnection) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(conn);
-          }
+      ConnectionPool.getPool().getConnection((err: MysqlError, conn: PoolConnection) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(conn);
         }
-      );
+      });
     });
   }
 

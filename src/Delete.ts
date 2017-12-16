@@ -75,7 +75,7 @@ export class Delete {
         let tableSchemaModel = schemaModel.getTableSchemaModel(table);
 
         if (!tableSchemaModel) {
-          reject(new Error(`table '${table}' is not exists!`));
+          reject(new Error(`Table '${table}' is not exists!`));
           return;
         }
 
@@ -84,7 +84,7 @@ export class Delete {
         let whereSQL = ``;
         let primaryKeyList = tableSchemaModel.columns.filter(column => column.primaryKey);
         if (primaryKeyList.length < 1) {
-          reject(new Error(`Table "${table}" has no primary key, you can not call this function. Please try function "deleteByWhere"!`));
+          reject(new Error(`Table '${table}' has no primary key, you can not call this function. Please try function 'deleteByWhere'!`));
           return;
         }
         for (let column of primaryKeyList) {
@@ -92,7 +92,7 @@ export class Delete {
             whereSQL += ` ${column.columnName}=? and`;
             whereList.push(Reflect.get(data, column.columnName));
           } else {
-            reject(new Error(`key ${column.columnName} is not provided!`));
+            reject(new Error(`Key ${column.columnName} is not provided!`));
             return;
           }
         }
@@ -180,7 +180,7 @@ export class Delete {
         let tableSchemaModel = schemaModel.getTableSchemaModel(table);
 
         if (!tableSchemaModel) {
-          reject(new Error(`table '${table}' is not exists!`));
+          reject(new Error(`Table '${table}' is not exists!`));
           return;
         }
 

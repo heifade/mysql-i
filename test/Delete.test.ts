@@ -107,7 +107,7 @@ describe("Delete", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
       });
 
     await Delete.delete(conn, {
@@ -119,7 +119,7 @@ describe("Delete", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
       });
   });
 
@@ -152,7 +152,7 @@ describe("Delete", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`key id is not provided!`);
+        expect(errMsg).to.equal(`Key id is not provided!`);
       });
   });
 
@@ -168,7 +168,7 @@ describe("Delete", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`Table "${tableNoPrimaryKey}" has no primary key, you can not call this function. Please try function "deleteByWhere"!`);
+        expect(errMsg).to.equal(`Table '${tableNoPrimaryKey}' has no primary key, you can not call this function. Please try function 'deleteByWhere'!`);
       });
   });
 

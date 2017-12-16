@@ -80,7 +80,7 @@ describe("Insert", function() {
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
       });
   });
 

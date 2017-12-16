@@ -47,7 +47,7 @@ export class Procedure {
           procedure
         );
         if (!procedureSchemaModel) {
-          reject(new Error(`procedure '${procedure}' is not exists!`));
+          reject(new Error(`Procedure '${procedure}' is not exists!`));
           return;
         }
 
