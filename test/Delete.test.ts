@@ -69,18 +69,17 @@ describe("Delete", function() {
   });
 
   it("when error", async () => {
+    let tableName = `tbl_not_exists`;
     await Delete.delete(conn, {
-      where: { id: '&&^%' },
+      where: { id: 0 },
       table: tableName
     })
       .then(() => {
-        console.log('555ok');
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        console.log(55, err);
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
       });
   });
 });
