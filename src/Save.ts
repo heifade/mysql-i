@@ -93,7 +93,7 @@ export class Save {
       case SaveType.delete: {
         //删除
         return Delete.delete(conn, {
-          where: pars.data,
+          data: pars.data,
           database: pars.database,
           table: pars.table
         });

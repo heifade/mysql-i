@@ -46,7 +46,7 @@ describe("Save", function() {
     expect(Reflect.get(rowData, "value")).to.equal(insertValue);
 
     await Save.save(conn, {
-      data: { id: 9 },
+      data: { id: 9, value: insertValue },
       table: tableName,
       saveType: SaveType.delete
     });
@@ -115,7 +115,7 @@ describe("Save", function() {
 
     await Save.saves(conn, [
       {
-        data: { id: 7 },
+        data: { id: 7, value: insertValue },
         table: tableName,
         saveType: SaveType.delete
       }
@@ -204,7 +204,7 @@ describe("Save", function() {
 
     await Save.savesSeq(conn, [
       {
-        data: { id: 5 },
+        data: { id: 5, value: insertValue },
         table: tableName,
         saveType: SaveType.delete
       }
