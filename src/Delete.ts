@@ -86,7 +86,7 @@ export class Delete {
           reject(new Error(`table '${table}' is not exists!`));
           return;
         }
-        
+
 
         console.log(1);
 
@@ -100,7 +100,7 @@ export class Delete {
 
         let sql = `delete from ${tableName} ${whereSQL}`;
 
-        console.log(4, sql);
+        console.log(4, sql, whereList);
 
         conn.query(sql, whereList, (err, result) => {
           if (err) {
