@@ -19,32 +19,66 @@ describe("Exec", function() {
   });
 
   it("exec must be success", async () => {
+    // 删除前有1，2，3，4，5
+    await Select.selectCount(conn, {
+      sql: `select * from ${tableName} where id in (?,?,?,?,?)`,
+      where: [1, 2, 3, 4, 5]
+    }).then(result => {
+      expect(result).to.be.equal(5);
+    });
+
+
+    // 删除 1，2，3，4，5
     await Exec.exec(conn, `delete from ${tableName} where id=1`);
     await Exec.execs(conn, [`delete from ${tableName} where id=2`, `delete from ${tableName} where id=3`]);
     await Exec.execsSeq(conn, [`delete from ${tableName} where id=4`, `delete from ${tableName} where id=5`]);
 
-    await Select.selectTop1(conn, {
-      sql: `select * from ${tableName} where id=?`,
-      where: [1]
+    // 验证 数据已不存在
+    await Select.selectCount(conn, {
+      sql: `select * from ${tableName} where id in (?,?,?,?,?)`,
+      where: [1, 2, 3, 4, 5]
     }).then(result => {
-      expect(result).to.be.null;
-    });
-
-    await Exec.exec(conn, `delete from ${tableName} where id1=1`).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
-    });
-
-    await Exec.execs(conn, [`delete from ${tableName} where id1=1`]).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
-    });
-
-    await Exec.execsSeq(conn, [`delete from ${tableName} where id1=1`]).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+      expect(result).to.be.equal(0);
     });
 
     await Exec.execsSeq(conn, [`drop table if exists tbl1`, `drop table if exists tbl2`, `drop table if exists tbl3`]);
+  });
+
+  it("exec with error", async () => {
+    await Exec.exec(conn, `delete from ${tableName} where id1=1`)
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+      });
+
+    await Exec.execs(conn, [`delete from ${tableName} where id1=1`])
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+      });
+
+    await Exec.execsSeq(conn, [`delete from ${tableName} where id1=1`, `delete from ${tableName} where id1=1`])
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+      });
+
+    await Exec.execsSeq(conn, [`create table f`, `create table f`])
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_TABLE_MUST_HAVE_COLUMNS");
+      });
   });
 });

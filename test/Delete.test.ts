@@ -40,10 +40,14 @@ describe("Delete", function() {
     await Delete.delete(conn, {
       where: { id: 1 },
       table: null
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal("pars.table can not be null or empty!");
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal("pars.table can not be null or empty!");
+      });
   });
 
   it("when table is not exists", async () => {
@@ -54,19 +58,27 @@ describe("Delete", function() {
     await Delete.delete(conn, {
       where: { id: 1 },
       table: tableName
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+      });
   });
 
   it("when error", async () => {
     await Delete.delete(conn, {
       where: { id: "Hellow" },
       table: tableName
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
+      });
   });
 });

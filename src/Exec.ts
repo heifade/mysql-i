@@ -69,22 +69,14 @@ export class Exec {
    * ]);
    * </pre>
    */
-  public static execs(conn: Connection, sqls: string[]) {
+  public static async execs(conn: Connection, sqls: string[]) {
     let promiseList = new Array<Promise<{}>>();
 
     sqls.map(sql => {
       promiseList.push(Exec.exec(conn, sql));
     });
 
-    return new Promise((resolve, reject) => {
-      Promise.all(promiseList)
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
+    return Promise.all(promiseList);
   }
 
   /**
@@ -108,18 +100,9 @@ export class Exec {
    *  ]);
    * </pre>
    */
-  public static execsSeq(conn: Connection, sqls: string[]) {
-    return new Promise((resolve, reject) => {
-      for (let sql of sqls) {
-        conn.query(sql, (err, result) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-        });
-      }
-
-      resolve();
-    });
+  public static async execsSeq(conn: Connection, sqls: string[]) {
+    for (let sql of sqls) {
+      await Exec.exec(conn, sql);
+    }
   }
 }

@@ -27,10 +27,14 @@ describe("Select", function() {
 
     await Select.select(conn, {
       sql: `select * from tbl_not_exists`
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
+      });
   });
 
   it("selectCount", async () => {
@@ -43,10 +47,14 @@ describe("Select", function() {
 
     await Select.selectCount(conn, {
       sql: `select * from tbl_not_exists`
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
+      });
   });
 
   it("selects", async () => {
@@ -64,10 +72,14 @@ describe("Select", function() {
 
     await Select.selectTop1(conn, {
       sql: `select * from tbl_not_exists`
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
+      });
   });
 
   it("selectSplitPage", async () => {
@@ -96,9 +108,13 @@ describe("Select", function() {
       where: [1],
       pageSize: 10,
       index: 1
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_NO_SUCH_TABLE`);
+      });
   });
 });

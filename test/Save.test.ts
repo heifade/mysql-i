@@ -150,10 +150,14 @@ describe("Save", function() {
         table: tableName,
         saveType: SaveType.insert
       }
-    ]).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
-    });
+    ])
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      });
   });
 
   it("savesSeq must be success", async () => {

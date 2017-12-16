@@ -64,20 +64,28 @@ describe("Update", function() {
     await Update.update(conn, {
       data: null,
       table: tableName
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal("pars.data can not be null or empty!");
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal("pars.data can not be null or empty!");
+      });
   });
 
   it("when pars.data is null of updateByWhere", async () => {
     await Update.updateByWhere(conn, {
       data: null,
       table: tableName
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal("pars.data can not be null or empty!");
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal("pars.data can not be null or empty!");
+      });
   });
 
   it("when pars.table is null of update", async () => {
@@ -86,10 +94,14 @@ describe("Update", function() {
     await Update.update(conn, {
       data: { value: insertValue },
       table: null
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal("pars.table can not be null or empty!");
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal("pars.table can not be null or empty!");
+      });
   });
 
   it("when pars.table is null of updateByWhere", async () => {
@@ -98,10 +110,14 @@ describe("Update", function() {
     await Update.updateByWhere(conn, {
       data: { value: insertValue },
       table: null
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal("pars.table can not be null or empty!");
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal("pars.table can not be null or empty!");
+      });
   });
 
   it("when table is not exists of update", async () => {
@@ -112,10 +128,14 @@ describe("Update", function() {
     await Update.update(conn, {
       data: { value: insertValue },
       table: tableName
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+      });
   });
 
   it("when table is not exists of updateByWhere", async () => {
@@ -126,10 +146,14 @@ describe("Update", function() {
     await Update.updateByWhere(conn, {
       data: { value: insertValue },
       table: tableName
-    }).catch(err => {
-      let errMsg = Reflect.get(err, "message");
-      expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errMsg = Reflect.get(err, "message");
+        expect(errMsg).to.equal(`table '${tableName}' is not exists!`);
+      });
   });
 
   it("update as data with no primary key", async () => {
@@ -159,10 +183,14 @@ describe("Update", function() {
         value2: "aaa"
       },
       table: tableName
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
+      });
   });
 
   it("when error of updateByWhere", async () => {
@@ -176,9 +204,13 @@ describe("Update", function() {
       },
       table: tableName,
       where: { id: 2 }
-    }).catch(err => {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
-    });
+    })
+      .then(() => {
+        expect(true).to.be.false; // 一定不能进到这里
+      })
+      .catch(err => {
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
+      });
   });
 });
