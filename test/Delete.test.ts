@@ -70,10 +70,11 @@ describe("Delete", function() {
 
   it("when error", async () => {
     await Delete.delete(conn, {
-      where: { id: "Hellow" },
+      where: { id: '&&^%' },
       table: tableName
     })
       .then(() => {
+        console.log('555ok');
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
