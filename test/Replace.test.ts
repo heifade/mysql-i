@@ -39,7 +39,7 @@ describe("Replace", function() {
       table: tableName
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -55,7 +55,7 @@ describe("Replace", function() {
       table: null
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -73,7 +73,7 @@ describe("Replace", function() {
       table: tableName
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errMsg = Reflect.get(err, "message");
@@ -93,7 +93,7 @@ describe("Replace", function() {
       table: tableName
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");

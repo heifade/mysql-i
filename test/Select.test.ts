@@ -29,7 +29,7 @@ describe("Select", function() {
       sql: `select * from tbl_not_exists`
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -49,7 +49,7 @@ describe("Select", function() {
       sql: `select * from tbl_not_exists`
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -74,7 +74,7 @@ describe("Select", function() {
       sql: `select * from tbl_not_exists`
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -110,7 +110,7 @@ describe("Select", function() {
       index: 1
     })
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");

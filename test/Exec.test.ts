@@ -47,7 +47,7 @@ describe("Exec", function() {
   it("exec with error", async () => {
     await Exec.exec(conn, `delete from ${tableName} where id1=1`)
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -56,7 +56,7 @@ describe("Exec", function() {
 
     await Exec.execs(conn, [`delete from ${tableName} where id1=1`])
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -65,7 +65,7 @@ describe("Exec", function() {
 
     await Exec.execsSeq(conn, [`delete from ${tableName} where id1=1`, `delete from ${tableName} where id1=1`])
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -74,7 +74,7 @@ describe("Exec", function() {
 
     await Exec.execsSeq(conn, [`drop table if exists f`, `drop table if exists f2`, `create table f(f1 varchar(100))`, `create table f2(f1 varchar1(100))`])
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -90,7 +90,7 @@ describe("Exec", function() {
     });
     await Exec.execsSeqWithTran(conn, [`delete from ${tableName} where id in(8,9)`, `delete from ${tableName} where id1=8`])
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");

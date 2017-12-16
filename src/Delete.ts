@@ -81,17 +81,23 @@ export class Delete {
           return;
         }
 
+        console.log(1);
+
         let { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
+
+        console.log(2, whereSQL);
 
         let tableName = Utils.getDbObjectName(database, table);
 
+        console.log(3, tableName);
+
         let sql = `delete from ${tableName} ${whereSQL}`;
 
-        console.log(1, sql);
+        console.log(4, sql);
 
-        conn.query(sql, whereList, (err2, result) => {
-          if (err2) {
-            reject(err2);
+        conn.query(sql, whereList, (err, result) => {
+          if (err) {
+            reject(err);
           } else {
             resolve();
           }

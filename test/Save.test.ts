@@ -152,7 +152,7 @@ describe("Save", function() {
       }
     ])
       .then(() => {
-        expect(true).to.be.false; // 一定不能进到这里
+        expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
@@ -303,7 +303,7 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
-      expect(true).to.be.false; // 一定不能进到这里
+      expect(true).to.be.false; // 进到这里就有问题
     } catch (err) {
       let errCode = Reflect.get(err, "code");
       expect(errCode).to.be.equal("ER_DUP_ENTRY");
@@ -366,7 +366,7 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
-      expect(true).to.be.false; // 一定不能进到这里
+      expect(true).to.be.false; // 进到这里就有问题
     } catch (err) {
       let errCode = Reflect.get(err, "code");
       expect(errCode).to.be.equal("ER_DUP_ENTRY");
