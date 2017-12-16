@@ -242,7 +242,7 @@ export class Save {
    *     }>} list
    * @memberof Save
    */
-  public static savesSeqWithTran(
+  public static async savesSeqWithTran(
     conn: Connection,
     list: Array<{
       data: {};
@@ -251,21 +251,17 @@ export class Save {
       saveType: SaveType;
     }>
   ) {
-    return new Promise((resolve, reject) => {
-      (async function() {
-        try {
-          await Transaction.begin(conn);
+    try {
+      await Transaction.begin(conn);
 
-          for (let item of list) {
-            await Save.save(conn, item);
-          }
-          await Transaction.commit(conn);
-          resolve();
-        } catch (err) {
-          await Transaction.rollback(conn);
-          reject(err);
-        }
-      })();
-    });
+      for (let item of list) {
+        await Save.save(conn, item);
+      }
+      await Transaction.commit(conn);
+      return Promise.resolve();
+    } catch (err) {
+      await Transaction.rollback(conn);
+      return Promise.reject(err);
+    }
   }
 }

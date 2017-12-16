@@ -32,7 +32,8 @@ describe("Select", function() {
         expect(true).to.be.false; // 一定不能进到这里
       })
       .catch(err => {
-        expect(err).not.to.be.null;
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -51,7 +52,8 @@ describe("Select", function() {
         expect(true).to.be.false; // 一定不能进到这里
       })
       .catch(err => {
-        expect(err).not.to.be.null;
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -75,7 +77,8 @@ describe("Select", function() {
         expect(true).to.be.false; // 一定不能进到这里
       })
       .catch(err => {
-        expect(err).not.to.be.null;
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -110,7 +113,8 @@ describe("Select", function() {
         expect(true).to.be.false; // 一定不能进到这里
       })
       .catch(err => {
-        expect(err).not.to.be.null;
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 });

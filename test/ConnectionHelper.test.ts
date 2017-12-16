@@ -11,7 +11,8 @@ describe("ConnectionHelper", function() {
     let o = Object.assign({}, connectionConfig);
     o.user = "";
     ConnectionHelper.create(o).catch(err => {
-      expect(err).not.to.be.null;
+      let errCode = Reflect.get(err, "code");
+      expect(errCode).to.equal(`ER_ACCESS_DENIED_ERROR`);
     });
 
     await ConnectionHelper.close(conn);

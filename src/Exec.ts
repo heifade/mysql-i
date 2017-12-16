@@ -1,4 +1,5 @@
 import { Connection } from "mysql";
+import { Transaction } from "./Transaction";
 
 /**
  * 执行SQL
@@ -103,6 +104,41 @@ export class Exec {
   public static async execsSeq(conn: Connection, sqls: string[]) {
     for (let sql of sqls) {
       await Exec.exec(conn, sql);
+    }
+  }
+
+  /**
+   * <pre>
+   * 顺序执行多个SQL语句 开启事务
+   * 所有SQL执行成功时，返回Promise为成功，如果其中一个SQL执行出错，返回的Promise为失败。
+   * 注意：此方法已单独开启事务。如不需开启事务，见 {@link execsSeq}
+   * </pre>
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {string[]} sqls - SQL语句数组
+   * @returns Promise对象
+   * @memberof Exec
+   * @example
+   * <pre>
+   *  await Exec.execsSeqWithTran(conn, [
+   *    `drop table if exists tbl1`,
+   *    `drop table if exists tbl2`,
+   *    `drop table if exists tbl3`,
+   *  ]);
+   * </pre>
+   */
+  public static async execsSeqWithTran(conn: Connection, sqls: string[]) {
+    try {
+      await Transaction.begin(conn);
+      for (let sql of sqls) {
+        await Exec.exec(conn, sql);
+      }
+      await Transaction.commit(conn);
+      return Promise.resolve();
+    } catch (err) {
+      await Transaction.rollback(conn);
+      return Promise.reject(err);
     }
   }
 }

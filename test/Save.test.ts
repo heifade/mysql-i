@@ -263,22 +263,18 @@ describe("Save", function() {
   it("savesWithTran must be success", async () => {
     let insertValue = `value${Math.random()}`;
 
-    try {
-      await Save.savesWithTran(conn, [
-        {
-          data: { id: 300, value: insertValue },
-          table: tableName,
-          saveType: SaveType.insert
-        },
-        {
-          data: { id: 301, value: insertValue },
-          table: tableName,
-          saveType: SaveType.insert
-        }
-      ]);
-    } catch (err) {
-      expect(err).not.to.be.null;
-    }
+    await Save.savesWithTran(conn, [
+      {
+        data: { id: 300, value: insertValue },
+        table: tableName,
+        saveType: SaveType.insert
+      },
+      {
+        data: { id: 301, value: insertValue },
+        table: tableName,
+        saveType: SaveType.insert
+      }
+    ]);
 
     let rowData = await Select.selectTop1(conn, {
       sql: `select value from ${tableName} where id=?`,
@@ -309,7 +305,8 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
-      expect(err).not.to.be.null;
+      let errCode = Reflect.get(err, "code");
+      expect(errCode).to.be.equal("ER_DUP_ENTRY");
     }
 
     let rowData = await Select.selectTop1(conn, {
@@ -371,7 +368,8 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 一定不能进到这里
     } catch (err) {
-      expect(err).not.to.be.null;
+      let errCode = Reflect.get(err, "code");
+      expect(errCode).to.be.equal("ER_DUP_ENTRY");
     }
 
     let rowData = await Select.selectTop1(conn, {

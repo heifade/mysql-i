@@ -109,7 +109,8 @@ describe("Procedure", function() {
         expect(true).to.be.false; // 一定不能进到这里
       })
       .catch(err => {
-        expect(err).not.to.null;
+        let errCode = Reflect.get(err, "code");
+        expect(errCode).to.be.equal("ER_DATA_TOO_LONG");
       });
   });
 
