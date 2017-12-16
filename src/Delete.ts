@@ -63,23 +63,30 @@ export class Delete {
       table: string;
     }
   ) {
+    console.log('a');
     let database = pars.database || conn.config.database;
 
     let where = pars.where;
 
     let table = pars.table;
+    console.log('b');
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
+    console.log('c');
 
     return new Promise((resolve, reject) => {
+      console.log('d');
       Schema.getSchema(conn, database).then(schemaModel => {
         let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+
+        console.log('e');
 
         if (!tableSchemaModel) {
           reject(new Error(`table '${table}' is not exists!`));
           return;
         }
+        
 
         console.log(1);
 
