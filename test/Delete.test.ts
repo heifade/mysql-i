@@ -77,6 +77,7 @@ describe("Delete", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
+        console.log(55, err);
         let errCode = Reflect.get(err, "code");
         expect(errCode).to.equal(`ER_TRUNCATED_WRONG_VALUE`);
       });
