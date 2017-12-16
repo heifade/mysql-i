@@ -81,10 +81,7 @@ export class Delete {
           return;
         }
 
-        let { whereSQL, whereList } = Where.getWhereSQL(
-          where,
-          tableSchemaModel
-        );
+        let { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
 
         let tableName = Utils.getDbObjectName(database, table);
 
