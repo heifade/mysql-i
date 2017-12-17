@@ -182,9 +182,9 @@ describe("Update", function() {
       },
       table: tableName
     })
-      .then(() => {
-        expect(true).to.be.false; // 进到这里就有问题
-      })
+      // .then(() => {
+      //   expect(true).to.be.false; // 进到这里就有问题
+      // })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
         expect(errCode).to.be.equal("ER_BAD_NULL_ERROR");
