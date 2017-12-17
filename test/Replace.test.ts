@@ -84,7 +84,7 @@ describe("Replace", function() {
   it("when error", async () => {
     await Replace.replace(conn, {
       data: {
-        id: 1
+        // id: 1
       },
       table: tableName
     })
@@ -93,7 +93,7 @@ describe("Replace", function() {
       })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_NO_DEFAULT_FOR_FIELD");
+        expect(errCode).to.be.equal("ER_PARSE_ERROR");
       });
   });
 });
