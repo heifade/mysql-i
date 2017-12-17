@@ -95,8 +95,6 @@ describe("Procedure", function() {
   });
 
   it("when error", async () => {
-    let insertValue = `123456789012345678901234567890123456789012345678901234567890`;
-
     await Procedure.exec(conn, {
       data: {
         // pId: 15,
@@ -105,9 +103,9 @@ describe("Procedure", function() {
       },
       procedure: procedureName
     })
-      // .then(() => {
-      //   expect(true).to.be.false; // 进到这里就有问题
-      // })
+      .then(() => {
+        expect(true).to.be.false; // 进到这里就有问题
+      })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
         expect(errCode).to.be.equal("ER_SP_WRONG_NO_OF_ARGS");
