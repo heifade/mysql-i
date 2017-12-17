@@ -68,6 +68,8 @@ mysql-i的主要特点：
 >
 > > execsSeq 执行多条SQL语句（顺序）
 >
+> > execsSeqWithTran 执行多条SQL语句，顺序执行(事务)
+>
 > Procedure 存储过程
 >
 > > exec 执行一个存储过程
