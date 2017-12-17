@@ -22,7 +22,7 @@ describe("Delete", function() {
           dateValue datetime
         )`
     );
-  
+
     Schema.clear(conn.config.database);
   });
   after(async () => {
@@ -123,7 +123,6 @@ describe("Delete", function() {
       });
   });
 
-
   it("when data is null", async () => {
     let insertName = `name${Math.random()}`;
 
@@ -160,7 +159,7 @@ describe("Delete", function() {
     let insertName = `name${Math.random()}`;
 
     await Delete.delete(conn, {
-      data: {id: 1},
+      data: { id: 1 },
       table: tableNoPrimaryKey
     })
       .then(() => {
