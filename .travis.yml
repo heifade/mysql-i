@@ -6,7 +6,7 @@ services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
-script :
+script:
   - npm test
   - npm run build
 after_script:
