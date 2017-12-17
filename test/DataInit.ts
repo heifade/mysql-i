@@ -11,7 +11,7 @@ export let initTable = async function(
     conn,
     `create table ${tableName} (
         id int not null ${autoIncrement ? "auto_increment" : ""} primary key,
-        value varchar(50),
+        value varchar(50) not null,
         dateValue datetime
       )`
   );
