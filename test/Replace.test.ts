@@ -20,7 +20,7 @@ describe("Replace", function() {
     let insertValue = `value${Math.random()}`;
 
     let result = await Replace.replace(conn, {
-      data: { id: 1, value: insertValue },
+      data: { id: 1, value: insertValue, vv: 1 },
       table: tableName
     });
 
@@ -82,22 +82,18 @@ describe("Replace", function() {
   });
 
   it("when error", async () => {
-    let insertValue = `123456789012345678901234567890123456789012345678901234567890`;
-
     await Replace.replace(conn, {
       data: {
-        id: 1,
-        value: insertValue,
-        value2: "aaa"
+        id: 1
       },
       table: tableName
     })
-      // .then(() => {
-      //   expect(true).to.be.false; // 进到这里就有问题
-      // })
+      .then(() => {
+        expect(true).to.be.false; // 进到这里就有问题
+      })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_DATA_TOO_LONG");
+        expect(errCode).to.be.equal("ER_NO_DEFAULT_FOR_FIELD");
       });
   });
 });

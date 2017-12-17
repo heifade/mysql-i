@@ -176,27 +176,22 @@ describe("Update", function() {
   it("when error of update", async () => {
     await Update.update(conn, {
       data: {
-        id: 1,
-        
-        value: null
+        id2: 1
       },
       table: tableName
     })
-      // .then(() => {
-      //   expect(true).to.be.false; // 进到这里就有问题
-      // })
+      .then(() => {
+        expect(true).to.be.false; // 进到这里就有问题
+      })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_BAD_NULL_ERROR");
+        expect(errCode).to.be.equal("ER_PARSE_ERROR");
       });
   });
 
   it("when error of updateByWhere", async () => {
-    let insertValue = `123456789012345678901234567890123456789012345678901234567890`;
-
     await Update.updateByWhere(conn, {
       data: {
-        // id: 2,
         id2: 2
       },
       table: tableName,

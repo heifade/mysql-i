@@ -99,9 +99,9 @@ describe("Procedure", function() {
 
     await Procedure.exec(conn, {
       data: {
-        pId: 15,
-        pValue: insertValue,
-        pOut: ""
+        // pId: 15,
+        // pValue: insertValue,
+        // pOut: ""
       },
       procedure: procedureName
     })
@@ -110,7 +110,7 @@ describe("Procedure", function() {
       // })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_DATA_TOO_LONG");
+        expect(errCode).to.be.equal("ER_SP_WRONG_NO_OF_ARGS");
       });
   });
 
