@@ -20,7 +20,7 @@ describe("Update", function() {
     let newValue = `value${Math.random()}` + "_newValue1";
 
     let result = await Update.update(conn, {
-      data: { id: 1, value: newValue },
+      data: { id: 1, value: newValue, vv: null },
       table: tableName
     });
 
@@ -177,7 +177,7 @@ describe("Update", function() {
     await Update.update(conn, {
       data: {
         id: 1,
-        vv: null,
+        
         value: null
       },
       table: tableName
@@ -196,19 +196,18 @@ describe("Update", function() {
 
     await Update.updateByWhere(conn, {
       data: {
-        id: 2,
-        dateValue: insertValue,
-        value2: "aaa"
+        // id: 2,
+        id2: 2
       },
       table: tableName,
       where: { id: 2 }
     })
-      // .then(() => {
-      //   expect(true).to.be.false; // 进到这里就有问题
-      // })
+      .then(() => {
+        expect(true).to.be.false; // 进到这里就有问题
+      })
       .catch(err => {
         let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_TRUNCATED_WRONG_VALUE");
+        expect(errCode).to.be.equal("ER_PARSE_ERROR");
       });
   });
 });
