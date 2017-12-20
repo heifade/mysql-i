@@ -265,9 +265,9 @@ export class Select {
    * @memberof Select
    */
   public static async selectGUID(conn: Connection) {
-    let result = await Select.select(conn, {
+    let result = await Select.selectOneValue(conn, {
       sql: `select upper(uuid()) as GUID`
     });
-    return Reflect.get(result, "GUID") as string;
+    return result as string;
   }
 }
