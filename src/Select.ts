@@ -215,4 +215,58 @@ export class Select {
         });
     });
   }
+
+  /**
+   * 查询第一条数据的第一个字段
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接对象
+   * @param {SelectParamsModel} param - 查询参数
+   * @returns Promise对象
+   * @memberof Select
+   * <pre>
+   * create table tbl1 (
+   *  f1 int,
+   *  f2 int,
+   *  f3 int
+   * )
+   * let result = await Select.selectOneValue(conn, {
+   *   sql: `select * from tbl1 where f1=?`,
+   *   where: [1]
+   * });
+   * 结果，返回值为满足条件的第一条数据的f1字段值
+   * </pre>
+   */
+  public static async selectOneValue(conn: Connection, param: SelectParamsModel) {
+    return new Promise<{}>((resolve, reject) => {
+      conn.query(param.sql, param.where, (err, results, fields) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (results && results.length > 0) {
+            let result = results[0];
+            let value = Reflect.get(result, fields[0].name);
+            resolve(value);
+          } else {
+            resolve(null);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 获取GUIID
+   *
+   * @static
+   * @param {Connection} conn - 数据库连接
+   * @returns
+   * @memberof Select
+   */
+  public static async selectGUID(conn: Connection) {
+    let result = await Select.select(conn, {
+      sql: `select upper(uuid()) as GUID`
+    });
+    return Reflect.get(result, "GUID") as string;
+  }
 }
