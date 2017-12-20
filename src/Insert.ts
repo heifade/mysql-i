@@ -64,7 +64,7 @@ export class Insert {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       Schema.getSchema(conn, database).then(schemaModel => {
         let tableSchemaModel = schemaModel.getTableSchemaModel(table);
 
@@ -80,15 +80,9 @@ export class Insert {
         let fieldValues = {};
 
         Reflect.ownKeys(data).map((key, index) => {
-          let column = tableSchemaModel.columns.filter(
-            column => column.columnName === key.toString()
-          )[0];
+          let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
           if (column) {
-            Reflect.set(
-              fieldValues,
-              column.columnName,
-              Reflect.get(data, column.columnName)
-            );
+            Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
           }
         });
 
@@ -99,9 +93,11 @@ export class Insert {
             return;
           }
 
-          resolve({
+          let res: any = {
             insertId: result.insertId // 自增值
-          });
+          };
+
+          resolve(res);
         });
       });
     });

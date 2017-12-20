@@ -34,7 +34,7 @@ describe("Transaction", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [10]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("transaction rollback must be success", async () => {

@@ -29,7 +29,7 @@ describe("Update", function() {
       where: [1]
     });
 
-    expect(Reflect.get(rowData, "value")).to.equal(newValue);
+    expect(rowData.value).to.equal(newValue);
 
     newValue = `value${Math.random()}` + "_newValue2";
 
@@ -44,7 +44,7 @@ describe("Update", function() {
       where: [2]
     });
 
-    expect(Reflect.get(rowData, "value")).to.equal(newValue);
+    expect(rowData.value).to.equal(newValue);
 
     newValue = `value${Math.random()}` + "_newValue3";
 
@@ -57,7 +57,7 @@ describe("Update", function() {
       sql: `select * from ${tableName}`
     });
 
-    expect(Reflect.get(rowData, "value")).to.equal(newValue);
+    expect(rowData.value).to.equal(newValue);
   });
 
   it("when pars.data is null of update", async () => {
@@ -69,8 +69,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.data can not be null or empty!");
+        expect(err.message).to.equal("pars.data can not be null or empty!");
       });
   });
 
@@ -83,8 +82,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.data can not be null or empty!");
+        expect(err.message).to.equal("pars.data can not be null or empty!");
       });
   });
 
@@ -99,8 +97,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.table can not be null or empty!");
+        expect(err.message).to.equal("pars.table can not be null or empty!");
       });
   });
 
@@ -115,8 +112,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.table can not be null or empty!");
+        expect(err.message).to.equal("pars.table can not be null or empty!");
       });
   });
 
@@ -133,8 +129,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
+        expect(err.message).to.equal(`Table '${tableName}' is not exists!`);
       });
   });
 
@@ -151,8 +146,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
+        expect(err.message).to.equal(`Table '${tableName}' is not exists!`);
       });
   });
 
@@ -170,7 +164,7 @@ describe("Update", function() {
       sql: `select * from ${tableName}`
     });
 
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("when error of update", async () => {
@@ -184,8 +178,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_PARSE_ERROR");
+        expect(err.code).to.be.equal("ER_PARSE_ERROR");
       });
   });
 
@@ -201,8 +194,7 @@ describe("Update", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_PARSE_ERROR");
+        expect(err.code).to.be.equal("ER_PARSE_ERROR");
       });
   });
 });

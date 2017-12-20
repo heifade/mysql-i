@@ -30,7 +30,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [10]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     insertValue = `value${Math.random()}_new1`;
     await Save.save(conn, {
@@ -43,7 +43,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [10]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     await Save.save(conn, {
       data: { id: 9, value: insertValue },
@@ -68,7 +68,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [8]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("saves must be success", async () => {
@@ -96,7 +96,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [11]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     insertValue = `value${Math.random()}_new1`;
     await Save.saves(conn, [
@@ -111,7 +111,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [11]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     await Save.saves(conn, [
       {
@@ -140,7 +140,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [6]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     // 插入重复键时报错
     insertValue = `value${Math.random()}_new3`;
@@ -155,8 +155,7 @@ describe("Save", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.equal(`ER_DUP_ENTRY`);
+        expect(err.code).to.equal(`ER_DUP_ENTRY`);
       });
   });
 
@@ -185,7 +184,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [12]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     insertValue = `value${Math.random()}_new1`;
     await Save.savesSeq(conn, [
@@ -200,7 +199,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [12]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     await Save.savesSeq(conn, [
       {
@@ -229,7 +228,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [4]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("savesSeq err", async () => {
@@ -249,15 +248,14 @@ describe("Save", function() {
         }
       ]);
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      expect(err.code).to.equal(`ER_DUP_ENTRY`);
     }
 
     let rowData = await Select.selectTop1(conn, {
       sql: `select value from ${tableName} where id=?`,
       where: [200]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("savesWithTran must be success", async () => {
@@ -284,7 +282,7 @@ describe("Save", function() {
       sql: `select value from ${tableName} where id=?`,
       where: [301]
     });
-    expect(rowData != null && Reflect.get(rowData, "value") === insertValue).to.be.true;
+    expect(rowData != null && rowData.value === insertValue).to.be.true;
   });
 
   it("savesWithTran err", async () => {
@@ -305,8 +303,7 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 进到这里就有问题
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.be.equal("ER_DUP_ENTRY");
+      expect(err.code).to.be.equal("ER_DUP_ENTRY");
     }
 
     let rowData = await Select.selectTop1(conn, {
@@ -333,21 +330,20 @@ describe("Save", function() {
         }
       ]);
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.equal(`ER_DUP_ENTRY`);
+      expect(err.code).to.equal(`ER_DUP_ENTRY`);
     }
 
     let rowData = await Select.selectTop1(conn, {
       sql: `select value from ${tableName} where id=?`,
       where: [400]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
 
     rowData = await Select.selectTop1(conn, {
       sql: `select value from ${tableName} where id=?`,
       where: [401]
     });
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("savesSeqWithTran err", async () => {
@@ -368,8 +364,7 @@ describe("Save", function() {
       ]);
       expect(true).to.be.false; // 进到这里就有问题
     } catch (err) {
-      let errCode = Reflect.get(err, "code");
-      expect(errCode).to.be.equal("ER_DUP_ENTRY");
+      expect(err.code).to.be.equal("ER_DUP_ENTRY");
     }
 
     let rowData = await Select.selectTop1(conn, {

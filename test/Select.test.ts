@@ -32,8 +32,7 @@ describe("Select", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
+        expect(err.code).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -52,8 +51,7 @@ describe("Select", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
+        expect(err.code).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -77,8 +75,7 @@ describe("Select", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
+        expect(err.code).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 
@@ -109,8 +106,7 @@ describe("Select", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_PARSE_ERROR");
+        expect(err.code).to.be.equal("ER_PARSE_ERROR");
       });
   });
 
@@ -145,8 +141,7 @@ describe("Select", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_NO_SUCH_TABLE");
+        expect(err.code).to.be.equal("ER_NO_SUCH_TABLE");
       });
   });
 });

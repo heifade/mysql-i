@@ -50,8 +50,7 @@ describe("Exec", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+        expect(err.code).to.equal(`ER_BAD_FIELD_ERROR`);
       });
 
     await Exec.execs(conn, [`delete from ${tableName} where id1=1`])
@@ -59,8 +58,7 @@ describe("Exec", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.equal(`ER_BAD_FIELD_ERROR`);
+        expect(err.code).to.equal(`ER_BAD_FIELD_ERROR`);
       });
 
     await Exec.execsSeq(conn, [`delete from ${tableName} where id1=1`, `delete from ${tableName} where id1=1`])
@@ -68,8 +66,7 @@ describe("Exec", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_BAD_FIELD_ERROR");
+        expect(err.code).to.be.equal("ER_BAD_FIELD_ERROR");
       });
 
     await Exec.execsSeq(conn, [`drop table if exists f`, `drop table if exists f2`, `create table f(f1 varchar(100))`, `create table f2(f1 varchar1(100))`])
@@ -77,8 +74,7 @@ describe("Exec", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.equal(`ER_PARSE_ERROR`);
+        expect(err.code).to.equal(`ER_PARSE_ERROR`);
       });
 
     // 删除前有8,9
@@ -93,8 +89,7 @@ describe("Exec", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_BAD_FIELD_ERROR");
+        expect(err.code).to.be.equal("ER_BAD_FIELD_ERROR");
       });
     // 8,9仍然存在
     await Select.selectCount(conn, {

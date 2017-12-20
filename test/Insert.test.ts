@@ -25,15 +25,13 @@ describe("Insert", function() {
       table: tableName
     });
 
-    let insertId = Reflect.get(result, "insertId");
-
     let rowData = await Select.selectTop1(conn, {
       sql: `select value from ${tableName} where id=?`,
-      where: [insertId]
+      where: [result.insertId]
     });
 
     expect(rowData != null).to.be.true;
-    expect(Reflect.get(rowData, "value")).to.equal(insertValue);
+    expect(rowData.value).to.equal(insertValue);
   });
 
   it("when pars.data is null", async () => {
@@ -45,8 +43,7 @@ describe("Insert", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.data can not be null or empty!");
+        expect(err.message).to.equal("pars.data can not be null or empty!");
       });
   });
 
@@ -61,8 +58,7 @@ describe("Insert", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal("pars.table can not be null or empty!");
+        expect(err.message).to.equal("pars.table can not be null or empty!");
       });
   });
 
@@ -79,8 +75,7 @@ describe("Insert", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errMsg = Reflect.get(err, "message");
-        expect(errMsg).to.equal(`Table '${tableName}' is not exists!`);
+        expect(err.message).to.equal(`Table '${tableName}' is not exists!`);
       });
   });
 
@@ -99,8 +94,7 @@ describe("Insert", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        let errCode = Reflect.get(err, "code");
-        expect(errCode).to.be.equal("ER_DUP_ENTRY");
+        expect(err.code).to.be.equal("ER_DUP_ENTRY");
       });
   });
 });

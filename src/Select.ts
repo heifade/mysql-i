@@ -115,7 +115,7 @@ export class Select {
    * </pre>
    */
   public static selectTop1(conn: Connection, param: SelectParamsModel) {
-    return new Promise<{}>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
         if (err) {
           reject(err);
@@ -155,8 +155,9 @@ export class Select {
           reject(err);
         } else {
           let list = readListFromResult(results);
+          let row = list[0];
 
-          resolve(Reflect.get(list[0], "value"));
+          resolve(row.value);
         }
       });
     });
