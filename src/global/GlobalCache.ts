@@ -1,4 +1,4 @@
-const globalCacheHashKey = "GlobalCacheHash";
+const globalCacheHashKey = "MySQL-i-GlobalCacheHash";
 
 export class GlobalCache {
   private static getGlobalHash() {
