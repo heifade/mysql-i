@@ -10,7 +10,7 @@ export class SplitPageResultModel {
    *
    * @memberof SplitPageResultModel
    */
-  public list: Array<{}>;
+  public list: Array<any>;
   /**
    * 总行数
    *

@@ -41,7 +41,7 @@ export class Select {
    * </pre>
    */
   public static select(conn: Connection, param: SelectParamsModel) {
-    return new Promise<{}[]>((resolve, reject) => {
+    return new Promise<any[]>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
         if (err) {
           reject(err);
@@ -79,7 +79,7 @@ export class Select {
    * </pre>
    */
   public static selects(conn: Connection, params: SelectParamsModel[]) {
-    return new Promise<{}[][]>((resolve, reject) => {
+    return new Promise<any[][]>((resolve, reject) => {
       let promises = new Array<Promise<{}[]>>();
 
       params.map(param => {
@@ -239,7 +239,7 @@ export class Select {
    * </pre>
    */
   public static async selectOneValue(conn: Connection, param: SelectParamsModel) {
-    return new Promise<{}>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       conn.query(param.sql, param.where, (err, results, fields) => {
         if (err) {
           reject(err);
