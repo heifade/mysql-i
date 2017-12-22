@@ -1,5 +1,4 @@
-mysql-i
-=======
+# mysql-i
 
 [![NPM version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][npm-url]
