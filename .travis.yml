@@ -8,8 +8,8 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 before_script:
   - npm i pcreate
-script:
   - pcreate test
+script:
   - pcreate build
 after_script:
 
