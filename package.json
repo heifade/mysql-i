@@ -1,6 +1,6 @@
 {
   "name": "mysql-i",
-  "version": "4.0.15",
+  "version": "4.0.16",
   "description": "mysql interface, base on mysql",
   "main": "./es/index.js",
   "module": "./es/index.js",
@@ -18,10 +18,11 @@
     "chai": "^4.1.2",
     "fs-i": "^1.0.4",
     "mocha": "^4.0.1",
-    "typescript": "^2.6.1"
+    "pcreate-config": "^1.0.11"
   },
   "scripts": {
-    "build": "pcreate build"
+    "build": "pcreate build",
+    "test": "pcreate test"
   },
   "keywords": [
     "mysql",
