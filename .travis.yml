@@ -1,16 +1,14 @@
 language: node_js
 sudo: enabled
 node_js:
-  - "8"
+  - "10"
 services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 before_script:
-  - npm i pcreate
-  - pcreate test -c
 script:
-  - pcreate build
+  - npm run build
 after_script:
 
 cache:
@@ -25,10 +23,3 @@ deploy:
     on:
       branch: master
       repo: heifade/mysql-i
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: docs
-    on:
-      branch: master
-
