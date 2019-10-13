@@ -7,6 +7,7 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 before_script:
+  - nyc mocha
 script:
   - npm run build
 after_script:
