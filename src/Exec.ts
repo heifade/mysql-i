@@ -64,10 +64,10 @@ export class Exec {
    * </pre>
    */
   public static async execs(conn: Connection, sqls: string[]) {
-    let promiseList = new Array<Promise<{}>>();
+    let promiseList = new Array<Promise<boolean>>();
 
     sqls.map(sql => {
-      promiseList.push(Exec.exec(conn, sql) as any);
+      promiseList.push(Exec.exec(conn, sql));
     });
 
     return Promise.all(promiseList);

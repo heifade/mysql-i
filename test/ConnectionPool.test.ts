@@ -5,13 +5,15 @@ import { connectionConfig } from "./connectionConfig";
 
 describe("ConnectionPool", function() {
   it("init", async () => {
-    ConnectionPool.init(connectionConfig);
-    ConnectionPool.init(connectionConfig);
+    await ConnectionPool.init(connectionConfig);
+    await ConnectionPool.init(connectionConfig);
 
     let conn = await ConnectionPool.getConnection();
 
     await ConnectionPool.closeConnection(conn);
     await ConnectionPool.closeConnection(conn);
+    await ConnectionPool.closeConnection(null);
+
 
     await ConnectionPool.closePool();
     await ConnectionPool.closePool();
@@ -19,7 +21,7 @@ describe("ConnectionPool", function() {
     let o = Object.assign({}, connectionConfig);
     o.user = "";
 
-    ConnectionPool.init(o);
+    await ConnectionPool.init(o);
 
     try {
       conn = await ConnectionPool.getConnection();

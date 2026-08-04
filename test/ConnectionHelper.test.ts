@@ -7,6 +7,7 @@ describe("ConnectionHelper", function() {
   it("create close", async () => {
     let conn = await ConnectionHelper.create(connectionConfig);
     await ConnectionHelper.close(conn);
+    await ConnectionHelper.close();
 
     let o = Object.assign({}, connectionConfig);
     o.user = "";

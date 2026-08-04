@@ -85,7 +85,6 @@ export class Insert {
     });
 
     const [res2] = await conn.query(sql, fieldValues);
-
     let res: any = {
       insertId: (res2 as any).insertId // 自增值
     };

@@ -25,10 +25,10 @@ export class ConnectionPool {
    * </pre>
    * @memberof ConnectionPool
    */
-  public static init(poolConfig: PoolOptions) {
+  public static async init(poolConfig: PoolOptions) {
     let connPool = ConnectionPool.getPool();
     if (connPool) {
-      connPool.end();
+      await connPool.end();
     }
 
     connPool = createPool(poolConfig);
@@ -74,7 +74,10 @@ export class ConnectionPool {
    * @returns Promise 对象
    * @memberof ConnectionPool
    */
-  public static async closeConnection(conn: PoolConnection) {
+  public static async closeConnection(conn?: PoolConnection | null) {
+    if (!conn) {
+      return;
+    }
     await conn.release();
   }
 }

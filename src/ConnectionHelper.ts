@@ -49,8 +49,11 @@ export class ConnectionHelper {
    * @returns 返回一个Promise对象
    * @memberof ConnectionHelper
    */
-  public static async close(conn: Connection) {
-    // await conn.end();
-    await conn.destroy();
+  public static async close(conn?: Connection | null) {
+    if (!conn) {
+      return;
+    }
+    await conn.end();
+    // await conn.destroy();
   }
 }
