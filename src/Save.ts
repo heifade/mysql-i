@@ -5,7 +5,6 @@ import { Update } from "./Update";
 import { Delete } from "./Delete";
 import { Replace } from "./Replace";
 import { Transaction } from "./Transaction";
-import { resolve } from "path";
 
 /**
  * 保存
@@ -135,7 +134,7 @@ export class Save {
       saveType: SaveType;
     }>
   ) {
-    let promiseList = new Array<Promise<any>>();
+    const promiseList = new Array<Promise<any>>();
 
     list.map(h => {
       promiseList.push(
@@ -219,7 +218,7 @@ export class Save {
       saveType: SaveType;
     }>
   ) {
-    for (let item of list) {
+    for (const item of list) {
       await Save.save(conn, item);
     }
   }
@@ -253,7 +252,7 @@ export class Save {
     try {
       await Transaction.begin(conn);
 
-      for (let item of list) {
+      for (const item of list) {
         await Save.save(conn, item);
       }
       await Transaction.commit(conn);

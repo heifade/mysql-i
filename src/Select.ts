@@ -3,9 +3,9 @@ import { SelectParamsModel } from "./model/SelectParamsModel";
 import { SplitPageParamsModel } from "./model/SplitPageParamsModel";
 import { SplitPageResultModel } from "./model/SplitPageResultModel";
 
-let readListFromResult = (result: any) => {
+const readListFromResult = (result: any) => {
   return result.map((h: any) => {
-    let item = {};
+    const item = {};
     return Object.assign(item, h);
   });
 };
@@ -77,10 +77,10 @@ export class Select {
    */
   public static selects(conn: Connection, params: SelectParamsModel[]) {
     return new Promise<any[][]>((resolve, reject) => {
-      let promises = new Array<Promise<{}[]>>();
+      const promises = new Array<Promise<{}[]>>();
 
       params.map(param => {
-        let p = Select.select(conn, param);
+        const p = Select.select(conn, param);
         promises.push(p);
       });
 
@@ -113,7 +113,7 @@ export class Select {
    */
   public static async selectTop1(conn: Connection, param: SelectParamsModel) {
     const [results, fields] = await conn.query(param.sql, param.where);
-    let list = readListFromResult(results);
+    const list = readListFromResult(results);
     return (list[0] || null);
   }
   /**
@@ -137,10 +137,10 @@ export class Select {
    * </pre>
    */
   public static async selectCount(conn: Connection, param: SelectParamsModel) {
-    let countSql = `select count(*) as value from (${param.sql}) tCount`;
+    const countSql = `select count(*) as value from (${param.sql}) tCount`;
     const [results, fields] = await conn.query(countSql, param.where);
-    let list = readListFromResult(results);
-    let row = list[0];
+    const list = readListFromResult(results);
+    const row = list[0];
     return row.value;
   }
 
@@ -168,23 +168,18 @@ export class Select {
    */
   public static async selectSplitPage(conn: Connection, param: SplitPageParamsModel) {
 
-    let countPromise = Select.selectCount(conn, param);
-    let index;
-    if (param.index < 1) {
-      index = 1;
-    } else {
-      index = param.index;
-    }
+    const countPromise = Select.selectCount(conn, param);
+    const index = param.index < 1 ? 1 : param.index;
 
-    let startIndex = param.pageSize * (index - 1);
-    let limitSql = ` limit ${startIndex}, ${param.pageSize}`;
-    let dataPromise = Select.select(conn, {
+    const startIndex = param.pageSize * (index - 1);
+    const limitSql = ` limit ${startIndex}, ${param.pageSize}`;
+    const dataPromise = Select.select(conn, {
       sql: param.sql + limitSql,
       where: param.where
     });
 
     const [count, list] = await Promise.all([countPromise, dataPromise]);
-    let result = new SplitPageResultModel();
+    const result = new SplitPageResultModel();
     result.count = count;
     result.list = list;
     return result;
@@ -215,8 +210,8 @@ export class Select {
     const [results, fields] = await conn.query(param.sql, param.where);
     const list = results as any[];
     if (list && list.length > 0) {
-      let result = list[0];
-      let value = Reflect.get(result, fields![0].name);
+      const result = list[0];
+      const value = Reflect.get(result, fields![0].name);
       return value;
     } else {
       return null;
@@ -232,7 +227,7 @@ export class Select {
    * @memberof Select
    */
   public static async selectGUID(conn: Connection) {
-    let result = await Select.selectOneValue(conn, {
+    const result = await Select.selectOneValue(conn, {
       sql: `select upper(uuid()) as GUID`
     });
     return result as string;

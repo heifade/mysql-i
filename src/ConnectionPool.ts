@@ -26,13 +26,13 @@ export class ConnectionPool {
    * @memberof ConnectionPool
    */
   public static async init(poolConfig: PoolOptions) {
-    let connPool = ConnectionPool.getPool();
+    const connPool = ConnectionPool.getPool();
     if (connPool) {
       await connPool.end();
     }
 
-    connPool = createPool(poolConfig);
-    GlobalCache.set("connPool", connPool);
+    const newPool = createPool(poolConfig);
+    GlobalCache.set("connPool", newPool);
   }
   /**
    * 关闭连接池

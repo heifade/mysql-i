@@ -57,33 +57,33 @@ export class Delete {
       table: string;
     }
   ) {
-    let database = (pars.database || conn.config.database)!;
+    const database = (pars.database || conn.config.database)!;
 
-    let table = pars.table;
+    const table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    let data = pars.data;
+    const data = pars.data;
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
     const schemaModel = await Schema.getSchema(conn, database);
 
-    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
+    const tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
     if (!tableSchemaModel) {
       throw new Error(`Table '${table}' is not exists!`);
     }
 
-    let whereList = new Array<any>();
+    const whereList = new Array<any>();
 
     let whereSQL = ``;
-    let primaryKeyList = tableSchemaModel.columns.filter(column => column.primaryKey);
+    const primaryKeyList = tableSchemaModel.columns.filter(column => column.primaryKey);
     if (primaryKeyList.length < 1) {
       throw new Error(`Table '${table}' has no primary key, you can not call this function. Please try function 'deleteByWhere'!`);
     }
-    for (let column of primaryKeyList) {
+    for (const column of primaryKeyList) {
       if (Reflect.has(data, column.columnName)) {
         whereSQL += ` ${column.columnName}=? and`;
         whereList.push(Reflect.get(data, column.columnName));
@@ -94,9 +94,9 @@ export class Delete {
 
     whereSQL = ` where ` + whereSQL.replace(/and$/, "");
 
-    let tableName = Utils.getDbObjectName(database, table);
+    const tableName = Utils.getDbObjectName(database, table);
 
-    let sql = `delete from ${tableName} ${whereSQL}`;
+    const sql = `delete from ${tableName} ${whereSQL}`;
 
     return conn.query(sql, whereList).then(result => {
       return true;
@@ -155,26 +155,26 @@ export class Delete {
       table: string;
     }
   ) {
-    let database = (pars.database || conn.config.database)!;
-    let where = pars.where || {};
+    const database = (pars.database || conn.config.database)!;
+    const where = pars.where || {};
 
-    let table = pars.table;
+    const table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
     const schemaModel = await Schema.getSchema(conn, database)
-    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
+    const tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
     if (!tableSchemaModel) {
       throw new Error(`Table '${table}' is not exists!`);
     }
 
-    let { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
+    const { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
 
-    let tableName = Utils.getDbObjectName(database, table);
+    const tableName = Utils.getDbObjectName(database, table);
 
-    let sql = `delete from ${tableName} ${whereSQL}`;
+    const sql = `delete from ${tableName} ${whereSQL}`;
 
     await conn.query(sql, whereList);
     return true;

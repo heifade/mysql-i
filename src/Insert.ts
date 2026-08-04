@@ -51,41 +51,41 @@ export class Insert {
       table: string;
     }
   ) {
-    let database = (pars.database || conn.config.database)!;
+    const database = (pars.database || conn.config.database)!;
 
-    let data = pars.data;
+    const data = pars.data;
 
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
 
-    let table = pars.table;
+    const table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
     const schemaModel = await Schema.getSchema(conn, database);
-    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
+    const tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
     if (!tableSchemaModel) {
       return Promise.reject(new Error(`Table '${table}' is not exists!`));
     }
 
-    let tableName = Utils.getDbObjectName(database, table);
+    const tableName = Utils.getDbObjectName(database, table);
 
-    let sql = `insert into ${tableName} set ?`;
+    const sql = `insert into ${tableName} set ?`;
 
-    let fieldValues = {};
+    const fieldValues = {};
 
     Reflect.ownKeys(data).map((key, index) => {
-      let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
+      const column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
       if (column) {
         Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
       }
     });
 
     const [res2] = await conn.query(sql, fieldValues);
-    let res: any = {
+    const res: any = {
       insertId: (res2 as any).insertId // 自增值
     };
     return res;

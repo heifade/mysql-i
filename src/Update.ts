@@ -57,32 +57,32 @@ export class Update {
       table: string;
     }
   ) {
-    let database = (pars.database || conn.config.database)!;
+    const database = (pars.database || conn.config.database)!;
 
-    let data = pars.data;
+    const data = pars.data;
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
 
-    let table = pars.table;
+    const table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
     const schemaModel = await Schema.getSchema(conn, database);
-    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
+    const tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
     if (!tableSchemaModel) {
       return Promise.reject(new Error(`Table '${table}' is not exists!`));
     }
 
     let dataList = new Array<any>();
-    let whereList = new Array<any>();
+    const whereList = new Array<any>();
 
     let fieldSQL = ` `;
     let whereSQL = ``;
     Reflect.ownKeys(data).map((key, index) => {
-      let column = tableSchemaModel.columns.filter(
+      const column = tableSchemaModel.columns.filter(
         column => column.columnName === key.toString()
       )[0];
       if (column) {
@@ -104,9 +104,9 @@ export class Update {
 
     dataList = dataList.concat(whereList);
 
-    let tableName = Utils.getDbObjectName(database, table);
+    const tableName = Utils.getDbObjectName(database, table);
 
-    let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
+    const sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
 
     const [] = await conn.query(sql, dataList);
     return true;
@@ -135,23 +135,23 @@ export class Update {
       table: string;
     }
   ) {
-    let database = (pars.database || conn.config.database)!;
+    const database = (pars.database || conn.config.database)!;
 
-    let data = pars.data;
+    const data = pars.data;
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
 
-    let where = pars.where || {};
+    const where = pars.where || {};
 
-    let table = pars.table;
+    const table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
 
     const schemaModel = await Schema.getSchema(conn, database);
-    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
+    const tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
     if (!tableSchemaModel) {
       return Promise.reject(new Error(`Table '${table}' is not exists!`));
@@ -161,7 +161,7 @@ export class Update {
 
     let fieldSQL = ` `;
     Reflect.ownKeys(data).map((key, index) => {
-      let column = tableSchemaModel.columns.filter(
+      const column = tableSchemaModel.columns.filter(
         column => column.columnName === key.toString()
       )[0];
       if (column) {
@@ -173,16 +173,16 @@ export class Update {
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
 
-    let { whereSQL, whereList } = Where.getWhereSQL(
+    const { whereSQL, whereList } = Where.getWhereSQL(
       where,
       tableSchemaModel
     );
 
     dataList = dataList.concat(whereList);
 
-    let tableName = Utils.getDbObjectName(database, table);
+    const tableName = Utils.getDbObjectName(database, table);
 
-    let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
+    const sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
 
     const [] = await conn.query(sql, dataList);
     return true;

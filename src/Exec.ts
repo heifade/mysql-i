@@ -64,7 +64,7 @@ export class Exec {
    * </pre>
    */
   public static async execs(conn: Connection, sqls: string[]) {
-    let promiseList = new Array<Promise<boolean>>();
+    const promiseList = new Array<Promise<boolean>>();
 
     sqls.map(sql => {
       promiseList.push(Exec.exec(conn, sql));
@@ -95,7 +95,7 @@ export class Exec {
    * </pre>
    */
   public static async execsSeq(conn: Connection, sqls: string[]) {
-    for (let sql of sqls) {
+    for (const sql of sqls) {
       await Exec.exec(conn, sql);
     }
   }
@@ -124,7 +124,7 @@ export class Exec {
   public static async execsSeqWithTran(conn: Connection, sqls: string[]) {
     try {
       await Transaction.begin(conn);
-      for (let sql of sqls) {
+      for (const sql of sqls) {
         await Exec.exec(conn, sql);
       }
       await Transaction.commit(conn);

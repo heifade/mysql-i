@@ -18,11 +18,11 @@ export class Where {
    */
   public static getWhereSQL(where: {}, tableSchemaModel: TableSchemaModel) {
     let whereSQL = ``;
-    let whereList = new Array<any>();
+    const whereList = new Array<any>();
 
     if (where != null) {
       Reflect.ownKeys(where).map((key, index) => {
-        let k = key.toString();
+        const k = key.toString();
         if (
           tableSchemaModel.columns.filter(column => column.columnName === k)
             .length

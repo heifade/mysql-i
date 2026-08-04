@@ -81,11 +81,11 @@ export class Schema {
     if (!schemaModel) {
       schemaModel = new SchemaModel();
 
-      let sqlTables = `SELECT TABLE_NAME as tableName
+      const sqlTables = `SELECT TABLE_NAME as tableName
           from information_schema.TABLES
           where TABLE_SCHEMA = ? `;
 
-      let sqlColumns = `select TABLE_NAME as tableName,
+      const sqlColumns = `select TABLE_NAME as tableName,
           COLUMN_NAME as columnName,
           ORDINAL_POSITION as position,
           case COLUMN_KEY when 'PRI' then '1' else '0' end as primaryKey
@@ -93,12 +93,12 @@ export class Schema {
           where TABLE_SCHEMA = ?
           order by tableName, position`;
 
-      let sqlProcedures = `select SPECIFIC_NAME as procedureName
+      const sqlProcedures = `select SPECIFIC_NAME as procedureName
           from
           information_schema.ROUTINES
           where ROUTINE_SCHEMA = ?`;
 
-      let sqlProcedurePars = `select PARAMETER_NAME as parameterName,
+      const sqlProcedurePars = `select PARAMETER_NAME as parameterName,
           SPECIFIC_NAME as procedureName,
           lower(PARAMETER_MODE) as parameterMode
           from information_schema.PARAMETERS
@@ -111,11 +111,11 @@ export class Schema {
         { sql: sqlProcedures, where: [database] },
         { sql: sqlProcedurePars, where: [database] }
       ]);
-      let tableList = lists[0];
-      let columnList = lists[1];
+      const tableList = lists[0];
+      const columnList = lists[1];
       schemaModel.tables = new Array<TableSchemaModel>();
       tableList.map(table => {
-        let tableModel = new TableSchemaModel();
+        const tableModel = new TableSchemaModel();
         tableModel.name = Reflect.get(table, "tableName");
         tableModel.columns = [];
         schemaModel.tables.push(tableModel);
@@ -127,7 +127,7 @@ export class Schema {
               Reflect.get(table, "tableName")
           )
           .map(column => {
-            let columnModel = new ColumnSchemaModel();
+            const columnModel = new ColumnSchemaModel();
             columnModel.columnName = Reflect.get(column, "columnName");
             columnModel.primaryKey =
               Reflect.get(column, "primaryKey") === "1";
@@ -135,11 +135,11 @@ export class Schema {
           });
       });
 
-      let procedureList = lists[2];
-      let procedureParsList = lists[3];
+      const procedureList = lists[2];
+      const procedureParsList = lists[3];
       schemaModel.procedures = new Array<ProcedureSchemaModel>();
       procedureList.map(procedure => {
-        let procedureModel = new ProcedureSchemaModel();
+        const procedureModel = new ProcedureSchemaModel();
         procedureModel.name = Reflect.get(procedure, "procedureName");
         procedureModel.pars = [];
         schemaModel.procedures.push(procedureModel);
@@ -151,7 +151,7 @@ export class Schema {
               Reflect.get(procedure, "procedureName")
           )
           .map(par => {
-            let parModel = new ProcedureParSchemaModel();
+            const parModel = new ProcedureParSchemaModel();
             parModel.name = Reflect.get(par, "parameterName");
             parModel.parameterMode = Reflect.get(par, "parameterMode");
             procedureModel.pars.push(parModel);
