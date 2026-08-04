@@ -1,4 +1,4 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Schema } from "./schema/Schema";
 import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
@@ -49,7 +49,7 @@ export class Update {
    * });
    * </pre>
    */
-  public static update(
+  public static async update(
     conn: Connection,
     pars: {
       data: {};
@@ -57,7 +57,7 @@ export class Update {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let data = pars.data;
     if (!data) {
@@ -69,56 +69,47 @@ export class Update {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+    const schemaModel = await Schema.getSchema(conn, database);
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
+    if (!tableSchemaModel) {
+      return Promise.reject(new Error(`Table '${table}' is not exists!`));
+    }
+
+    let dataList = new Array<any>();
+    let whereList = new Array<any>();
+
+    let fieldSQL = ` `;
+    let whereSQL = ``;
+    Reflect.ownKeys(data).map((key, index) => {
+      let column = tableSchemaModel.columns.filter(
+        column => column.columnName === key.toString()
+      )[0];
+      if (column) {
+        if (column.primaryKey) {
+          whereSQL += ` ${column.columnName}=? and`;
+          whereList.push(Reflect.get(data, column.columnName));
+        } else {
+          fieldSQL += ` ${column.columnName}=?,`;
+
+          dataList.push(Reflect.get(data, column.columnName));
         }
-
-        let dataList = new Array<any>();
-        let whereList = new Array<any>();
-
-        let fieldSQL = ` `;
-        let whereSQL = ``;
-        Reflect.ownKeys(data).map((key, index) => {
-          let column = tableSchemaModel.columns.filter(
-            column => column.columnName === key.toString()
-          )[0];
-          if (column) {
-            if (column.primaryKey) {
-              whereSQL += ` ${column.columnName}=? and`;
-              whereList.push(Reflect.get(data, column.columnName));
-            } else {
-              fieldSQL += ` ${column.columnName}=?,`;
-
-              dataList.push(Reflect.get(data, column.columnName));
-            }
-          }
-        });
-
-        fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
-        if (whereSQL) {
-          whereSQL = ` where ` + whereSQL.replace(/and$/, "");
-        }
-
-        dataList = dataList.concat(whereList);
-
-        let tableName = Utils.getDbObjectName(database, table);
-
-        let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
-
-        conn.query(sql, dataList, (err2, result) => {
-          if (err2) {
-            reject(err2);
-          } else {
-            resolve();
-          }
-        });
-      });
+      }
     });
+
+    fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
+    if (whereSQL) {
+      whereSQL = ` where ` + whereSQL.replace(/and$/, "");
+    }
+
+    dataList = dataList.concat(whereList);
+
+    let tableName = Utils.getDbObjectName(database, table);
+
+    let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
+
+    const [] = await conn.query(sql, dataList);
+    return true;
   }
 
   /**
@@ -135,7 +126,7 @@ export class Update {
    * @returns Promise对象
    * @memberof Update
    */
-  public static updateByWhere(
+  public static async updateByWhere(
     conn: Connection,
     pars: {
       data: {};
@@ -144,64 +135,56 @@ export class Update {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let data = pars.data;
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
 
-    let where = pars.where;
+    let where = pars.where || {};
 
     let table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
-        }
+    const schemaModel = await Schema.getSchema(conn, database);
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        let dataList = new Array<any>();
+    if (!tableSchemaModel) {
+      return Promise.reject(new Error(`Table '${table}' is not exists!`));
+    }
 
-        let fieldSQL = ` `;
-        Reflect.ownKeys(data).map((key, index) => {
-          let column = tableSchemaModel.columns.filter(
-            column => column.columnName === key.toString()
-          )[0];
-          if (column) {
-            fieldSQL += ` ${column.columnName}=?,`;
+    let dataList = new Array<any>();
 
-            dataList.push(Reflect.get(data, column.columnName));
-          }
-        });
+    let fieldSQL = ` `;
+    Reflect.ownKeys(data).map((key, index) => {
+      let column = tableSchemaModel.columns.filter(
+        column => column.columnName === key.toString()
+      )[0];
+      if (column) {
+        fieldSQL += ` ${column.columnName}=?,`;
 
-        fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
-
-        let { whereSQL, whereList } = Where.getWhereSQL(
-          where,
-          tableSchemaModel
-        );
-
-        dataList = dataList.concat(whereList);
-
-        let tableName = Utils.getDbObjectName(database, table);
-
-        let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
-
-        conn.query(sql, dataList, (err2, result) => {
-          if (err2) {
-            reject(err2);
-          } else {
-            resolve();
-          }
-        });
-      });
+        dataList.push(Reflect.get(data, column.columnName));
+      }
     });
+
+    fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
+
+    let { whereSQL, whereList } = Where.getWhereSQL(
+      where,
+      tableSchemaModel
+    );
+
+    dataList = dataList.concat(whereList);
+
+    let tableName = Utils.getDbObjectName(database, table);
+
+    let sql = `update ${tableName} set ${fieldSQL} ${whereSQL}`;
+
+    const [] = await conn.query(sql, dataList);
+    return true;
   }
 }

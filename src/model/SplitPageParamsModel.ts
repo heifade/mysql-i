@@ -22,4 +22,10 @@ export class SplitPageParamsModel extends SelectParamsModel {
    * @memberof SplitPageParamsModel
    */
   public index: number;
+
+  constructor() {
+    super();
+    this.pageSize = 0;
+    this.index = 1;
+  }
 }

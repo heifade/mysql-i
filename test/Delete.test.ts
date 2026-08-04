@@ -2,7 +2,7 @@ import { Delete, ConnectionHelper, Select, Exec, Schema } from "../src/index";
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { connectionConfig } from "./connectionConfig";
 
 describe("Delete", function() {
@@ -23,13 +23,13 @@ describe("Delete", function() {
         )`
     );
 
-    Schema.clear(conn.config.database);
+    Schema.clear(conn.config.database!);
   });
   after(async () => {
     await ConnectionHelper.close(conn);
   });
 
-  it("delete must be success", async () => {
+  it("delete must be success1", async () => {
     let deleteId = 1;
     let count = await Select.selectCount(conn, {
       sql: `select * from ${tableName} where id=?`,
@@ -70,7 +70,7 @@ describe("Delete", function() {
   it("when pars.table is null", async () => {
     await Delete.deleteByWhere(conn, {
       where: { id: 1 },
-      table: null
+      table: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题
@@ -81,7 +81,7 @@ describe("Delete", function() {
 
     await Delete.delete(conn, {
       data: { id: 1 },
-      table: null
+      table: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题
@@ -123,7 +123,7 @@ describe("Delete", function() {
     let insertName = `name${Math.random()}`;
 
     await Delete.delete(conn, {
-      data: null,
+      data: null as any,
       table: tableName
     })
       .then(() => {

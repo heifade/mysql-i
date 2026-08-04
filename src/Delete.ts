@@ -1,6 +1,5 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Schema } from "./schema/Schema";
-import { TableSchemaModel } from "./model/SchemaModel";
 import { Where } from "./util/Where";
 import { Utils } from "./util/Utils";
 
@@ -50,7 +49,7 @@ export class Delete {
    *   table: 'tbl1'
    * });
    */
-  public static delete(
+  public static async delete(
     conn: Connection,
     pars: {
       data: {};
@@ -58,7 +57,7 @@ export class Delete {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let table = pars.table;
     if (!table) {
@@ -69,48 +68,38 @@ export class Delete {
     if (!data) {
       return Promise.reject(new Error(`pars.data can not be null or empty!`));
     }
+    const schemaModel = await Schema.getSchema(conn, database);
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
-        }
+    if (!tableSchemaModel) {
+      throw new Error(`Table '${table}' is not exists!`);
+    }
 
-        let whereList = new Array<any>();
+    let whereList = new Array<any>();
 
-        let whereSQL = ``;
-        let primaryKeyList = tableSchemaModel.columns.filter(column => column.primaryKey);
-        if (primaryKeyList.length < 1) {
-          reject(new Error(`Table '${table}' has no primary key, you can not call this function. Please try function 'deleteByWhere'!`));
-          return;
-        }
-        for (let column of primaryKeyList) {
-          if (Reflect.has(data, column.columnName)) {
-            whereSQL += ` ${column.columnName}=? and`;
-            whereList.push(Reflect.get(data, column.columnName));
-          } else {
-            reject(new Error(`Key ${column.columnName} is not provided!`));
-            return;
-          }
-        }
+    let whereSQL = ``;
+    let primaryKeyList = tableSchemaModel.columns.filter(column => column.primaryKey);
+    if (primaryKeyList.length < 1) {
+      throw new Error(`Table '${table}' has no primary key, you can not call this function. Please try function 'deleteByWhere'!`);
+    }
+    for (let column of primaryKeyList) {
+      if (Reflect.has(data, column.columnName)) {
+        whereSQL += ` ${column.columnName}=? and`;
+        whereList.push(Reflect.get(data, column.columnName));
+      } else {
+        throw new Error(`Key ${column.columnName} is not provided!`);
+      }
+    }
 
-        whereSQL = ` where ` + whereSQL.replace(/and$/, "");
+    whereSQL = ` where ` + whereSQL.replace(/and$/, "");
 
-        let tableName = Utils.getDbObjectName(database, table);
+    let tableName = Utils.getDbObjectName(database, table);
 
-        let sql = `delete from ${tableName} ${whereSQL}`;
+    let sql = `delete from ${tableName} ${whereSQL}`;
 
-        conn.query(sql, whereList, (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
+    return conn.query(sql, whereList).then(result => {
+      return true;
     });
   }
 
@@ -158,7 +147,7 @@ export class Delete {
    * });
    * </pre>
    */
-  public static deleteByWhere(
+  public static async deleteByWhere(
     conn: Connection,
     pars: {
       where?: {};
@@ -166,38 +155,29 @@ export class Delete {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
-
-    let where = pars.where;
+    let database = (pars.database || conn.config.database)!;
+    let where = pars.where || {};
 
     let table = pars.table;
     if (!table) {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+    const schemaModel = await Schema.getSchema(conn, database)
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
-        }
+    if (!tableSchemaModel) {
+      throw new Error(`Table '${table}' is not exists!`);
+    }
 
-        let { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
+    let { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
 
-        let tableName = Utils.getDbObjectName(database, table);
+    let tableName = Utils.getDbObjectName(database, table);
 
-        let sql = `delete from ${tableName} ${whereSQL}`;
+    let sql = `delete from ${tableName} ${whereSQL}`;
 
-        conn.query(sql, whereList, (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-    });
+    await conn.query(sql, whereList);
+    return true;
+
   }
 }

@@ -1,4 +1,4 @@
-import { Connection, Query, MysqlError, FieldInfo } from "mysql";
+import { Connection } from "mysql2/promise";
 import { SelectParamsModel } from "./model/SelectParamsModel";
 import { SplitPageParamsModel } from "./model/SplitPageParamsModel";
 import { SplitPageResultModel } from "./model/SplitPageResultModel";
@@ -40,16 +40,13 @@ export class Select {
    * });
    * </pre>
    */
-  public static select(conn: Connection, param: SelectParamsModel) {
-    return new Promise<any[]>((resolve, reject) => {
-      conn.query(param.sql, param.where, (err, results, fields) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(readListFromResult(results));
-      });
-    });
+  public static async select(conn: Connection, param: SelectParamsModel) {
+    try {
+      const [results, fields] = await conn.query(param.sql, param.where);
+      return readListFromResult(results);
+    } catch (err) {
+      throw err;
+    }
   }
 
   /**
@@ -114,17 +111,10 @@ export class Select {
    * });
    * </pre>
    */
-  public static selectTop1(conn: Connection, param: SelectParamsModel) {
-    return new Promise<any>((resolve, reject) => {
-      conn.query(param.sql, param.where, (err, results, fields) => {
-        if (err) {
-          reject(err);
-        } else {
-          let list = readListFromResult(results);
-          resolve(list[0] || null);
-        }
-      });
-    });
+  public static async selectTop1(conn: Connection, param: SelectParamsModel) {
+    const [results, fields] = await conn.query(param.sql, param.where);
+    let list = readListFromResult(results);
+    return (list[0] || null);
   }
   /**
    * 查询单个SQL，返回行数
@@ -146,21 +136,12 @@ export class Select {
    * });
    * </pre>
    */
-  public static selectCount(conn: Connection, param: SelectParamsModel) {
-    return new Promise<number>((resolve, reject) => {
-      let countSql = `select count(*) as value from (${param.sql}) tCount`;
-
-      conn.query(countSql, param.where, (err, results, fields) => {
-        if (err) {
-          reject(err);
-        } else {
-          let list = readListFromResult(results);
-          let row = list[0];
-
-          resolve(row.value);
-        }
-      });
-    });
+  public static async selectCount(conn: Connection, param: SelectParamsModel) {
+    let countSql = `select count(*) as value from (${param.sql}) tCount`;
+    const [results, fields] = await conn.query(countSql, param.where);
+    let list = readListFromResult(results);
+    let row = list[0];
+    return row.value;
   }
 
   /**
@@ -185,36 +166,28 @@ export class Select {
    * });
    * </pre>
    */
-  public static selectSplitPage(conn: Connection, param: SplitPageParamsModel) {
-    return new Promise<SplitPageResultModel>((resolve, reject) => {
-      let countPromise = Select.selectCount(conn, param);
+  public static async selectSplitPage(conn: Connection, param: SplitPageParamsModel) {
 
-      let index;
-      if (param.index < 1) {
-        index = 1;
-      } else {
-        index = param.index;
-      }
+    let countPromise = Select.selectCount(conn, param);
+    let index;
+    if (param.index < 1) {
+      index = 1;
+    } else {
+      index = param.index;
+    }
 
-      let startIndex = param.pageSize * (index - 1);
-      let limitSql = ` limit ${startIndex}, ${param.pageSize}`;
-      let dataPromise = Select.select(conn, {
-        sql: param.sql + limitSql,
-        where: param.where
-      });
-
-      Promise.all([countPromise, dataPromise])
-        .then(list => {
-          let result = new SplitPageResultModel();
-          result.count = list[0];
-          result.list = list[1];
-
-          resolve(result);
-        })
-        .catch(err => {
-          reject(err);
-        });
+    let startIndex = param.pageSize * (index - 1);
+    let limitSql = ` limit ${startIndex}, ${param.pageSize}`;
+    let dataPromise = Select.select(conn, {
+      sql: param.sql + limitSql,
+      where: param.where
     });
+
+    const [count, list] = await Promise.all([countPromise, dataPromise]);
+    let result = new SplitPageResultModel();
+    result.count = count;
+    result.list = list;
+    return result;
   }
 
   /**
@@ -239,21 +212,15 @@ export class Select {
    * </pre>
    */
   public static async selectOneValue(conn: Connection, param: SelectParamsModel) {
-    return new Promise<any>((resolve, reject) => {
-      conn.query(param.sql, param.where, (err, results, fields) => {
-        if (err) {
-          reject(err);
-        } else {
-          if (results && results.length > 0) {
-            let result = results[0];
-            let value = Reflect.get(result, fields[0].name);
-            resolve(value);
-          } else {
-            resolve(null);
-          }
-        }
-      });
-    });
+    const [results, fields] = await conn.query(param.sql, param.where);
+    const list = results as any[];
+    if (list && list.length > 0) {
+      let result = list[0];
+      let value = Reflect.get(result, fields![0].name);
+      return value;
+    } else {
+      return null;
+    }
   }
 
   /**

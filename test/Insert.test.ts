@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { PoolConnection, Connection } from "mysql";
+import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Insert, Select } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
@@ -36,7 +36,7 @@ describe("Insert", function() {
 
   it("when pars.data is null", async () => {
     await Insert.insert(conn, {
-      data: null,
+      data: null as any,
       table: tableName
     })
       .then(() => {
@@ -52,7 +52,7 @@ describe("Insert", function() {
 
     await Insert.insert(conn, {
       data: { value: insertValue },
-      table: null
+      table: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题

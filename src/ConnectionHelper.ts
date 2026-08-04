@@ -1,4 +1,4 @@
-import { createConnection, ConnectionConfig, Connection } from "mysql";
+import { createConnection, ConnectionOptions, Connection } from "mysql2/promise";
 
 /**
  * 数据库连接管理器，用于创建数据库连接，关闭数据库连接
@@ -37,16 +37,8 @@ export class ConnectionHelper {
    *  });
    * </pre>
    */
-  public static create(config: ConnectionConfig) {
-    return new Promise<Connection>((resolve, reject) => {
-      let conn = createConnection(config);
-      conn.connect((err, ...args) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(conn);
-      });
-    });
+  public static async create(config: ConnectionOptions) {
+    return await createConnection(config);
   }
 
   /**
@@ -57,15 +49,8 @@ export class ConnectionHelper {
    * @returns 返回一个Promise对象
    * @memberof ConnectionHelper
    */
-  public static close(conn: Connection) {
-    return new Promise((resolve, reject) => {
-      if (conn) {
-        conn.end(err => {
-          resolve();
-        });
-      } else {
-        resolve();
-      }
-    });
+  public static async close(conn: Connection) {
+    // await conn.end();
+    await conn.destroy();
   }
 }

@@ -1,5 +1,5 @@
 import { Save, Exec, SaveType, Schema } from "../src/index";
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 
 export let initTable = async function(
   conn: Connection,
@@ -16,7 +16,7 @@ export let initTable = async function(
       )`
   );
 
-  Schema.clear(conn.config.database);
+  Schema.clear(conn.config.database!);
 
   for (let i = 0; i < 10; i++) {
     let data = autoIncrement

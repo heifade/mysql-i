@@ -19,4 +19,9 @@ export class SelectParamsModel {
    * @memberof SelectParamsModel
    */
   public where?: any[];
+
+  constructor() {
+    this.sql = '';
+    this.where = [];
+  }
 }

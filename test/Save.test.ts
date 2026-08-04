@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { PoolConnection, Connection } from "mysql";
+import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Save, Select, SaveType } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
@@ -247,7 +247,7 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
-    } catch (err) {
+    } catch (err: any) {
       expect(err.code).to.equal(`ER_DUP_ENTRY`);
     }
 
@@ -302,7 +302,7 @@ describe("Save", function() {
         }
       ]);
       expect(true).to.be.false; // 进到这里就有问题
-    } catch (err) {
+    } catch (err: any) {
       expect(err.code).to.be.equal("ER_DUP_ENTRY");
     }
 
@@ -329,7 +329,7 @@ describe("Save", function() {
           saveType: SaveType.insert
         }
       ]);
-    } catch (err) {
+    } catch (err: any) {
       expect(err.code).to.equal(`ER_DUP_ENTRY`);
     }
 
@@ -363,7 +363,7 @@ describe("Save", function() {
         }
       ]);
       expect(true).to.be.false; // 进到这里就有问题
-    } catch (err) {
+    } catch (err: any) {
       expect(err.code).to.be.equal("ER_DUP_ENTRY");
     }
 

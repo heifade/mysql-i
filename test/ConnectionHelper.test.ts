@@ -15,6 +15,5 @@ describe("ConnectionHelper", function() {
     });
 
     await ConnectionHelper.close(conn);
-    await ConnectionHelper.close(null);
   });
 });

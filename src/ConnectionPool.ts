@@ -1,4 +1,4 @@
-import { PoolConfig, Pool, PoolConnection, MysqlError, createPool, Connection } from "mysql";
+import { PoolOptions, Pool, PoolConnection, createPool, Connection } from "mysql2/promise";
 import { GlobalCache } from "./global/GlobalCache";
 
 /**
@@ -25,7 +25,7 @@ export class ConnectionPool {
    * </pre>
    * @memberof ConnectionPool
    */
-  public static init(poolConfig: PoolConfig) {
+  public static init(poolConfig: PoolOptions) {
     let connPool = ConnectionPool.getPool();
     if (connPool) {
       connPool.end();
@@ -41,16 +41,13 @@ export class ConnectionPool {
    * @returns Promise对象
    * @memberof ConnectionPool
    */
-  public static closePool() {
-    return new Promise((resolve, reject) => {
-      if (!ConnectionPool.getPool()) {
-        resolve();
-      }
-      return ConnectionPool.getPool().end(err => {
-        GlobalCache.set("connPool", null);
-        resolve();
-      });
-    });
+  public static async closePool() {
+    if (!ConnectionPool.getPool()) {
+      return;
+    }
+    const pool = ConnectionPool.getPool();
+    await pool.end();
+    GlobalCache.set("connPool", null);
   }
 
   private static getPool(): Pool {
@@ -64,16 +61,9 @@ export class ConnectionPool {
    * @returns Promise对象
    * @memberof ConnectionPool
    */
-  public static getConnection() {
-    return new Promise<PoolConnection>((resolve, reject) => {
-      ConnectionPool.getPool().getConnection((err: MysqlError, conn: PoolConnection) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(conn);
-        }
-      });
-    });
+  public static async getConnection() {
+    const pool = ConnectionPool.getPool();
+    return pool.getConnection();
   }
 
   /**
@@ -84,15 +74,7 @@ export class ConnectionPool {
    * @returns Promise 对象
    * @memberof ConnectionPool
    */
-  public static closeConnection(conn: PoolConnection) {
-    return new Promise((resolve, reject) => {
-      if (conn) {
-        try {
-          ConnectionPool.getPool().releaseConnection(conn);
-        } catch (err) {}
-      }
-
-      resolve();
-    });
+  public static async closeConnection(conn: PoolConnection) {
+    await conn.release();
   }
 }

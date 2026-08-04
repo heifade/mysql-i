@@ -1,10 +1,10 @@
-import { PoolConfig } from "mysql";
+import { ConnectionOptions } from "mysql2";
 
-export let connectionConfig: PoolConfig = {
+export let connectionConfig: ConnectionOptions = {
   host: "127.0.0.1",
-  user: "travis",
-  password: "",
+  user: "root",
+  password: "Abcd,1234",
   database: "test",
   port: 3306,
-  timeout: 60000,
+  connectTimeout: 60000,
 };

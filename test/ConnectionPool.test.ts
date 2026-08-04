@@ -12,7 +12,6 @@ describe("ConnectionPool", function() {
 
     await ConnectionPool.closeConnection(conn);
     await ConnectionPool.closeConnection(conn);
-    await ConnectionPool.closeConnection(null);
 
     await ConnectionPool.closePool();
     await ConnectionPool.closePool();

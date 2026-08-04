@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { PoolConnection, Connection } from "mysql";
+import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Select } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 

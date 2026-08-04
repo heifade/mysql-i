@@ -1,4 +1,4 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Schema } from "./schema/Schema";
 import { Utils } from "./util/Utils";
 
@@ -43,7 +43,7 @@ export class Insert {
    * });
    * </pre>
    */
-  public static insert(
+  public static async insert(
     conn: Connection,
     pars: {
       data: {};
@@ -51,7 +51,7 @@ export class Insert {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let data = pars.data;
 
@@ -64,42 +64,31 @@ export class Insert {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise<any>((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+    const schemaModel = await Schema.getSchema(conn, database);
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
-        }
+    if (!tableSchemaModel) {
+      return Promise.reject(new Error(`Table '${table}' is not exists!`));
+    }
 
-        let tableName = Utils.getDbObjectName(database, table);
+    let tableName = Utils.getDbObjectName(database, table);
 
-        let sql = `insert into ${tableName} set ?`;
+    let sql = `insert into ${tableName} set ?`;
 
-        let fieldValues = {};
+    let fieldValues = {};
 
-        Reflect.ownKeys(data).map((key, index) => {
-          let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
-          if (column) {
-            Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
-          }
-        });
-
-        conn.query(sql, fieldValues, (err2, result) => {
-          if (err2) {
-            reject(err2);
-
-            return;
-          }
-
-          let res: any = {
-            insertId: result.insertId // 自增值
-          };
-
-          resolve(res);
-        });
-      });
+    Reflect.ownKeys(data).map((key, index) => {
+      let column = tableSchemaModel.columns.filter(column => column.columnName === key.toString())[0];
+      if (column) {
+        Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
+      }
     });
+
+    const [res2] = await conn.query(sql, fieldValues);
+
+    let res: any = {
+      insertId: (res2 as any).insertId // 自增值
+    };
+    return res;
   }
 }

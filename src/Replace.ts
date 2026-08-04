@@ -1,4 +1,4 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Schema } from "./schema/Schema";
 import { Utils } from "./util/Utils";
 
@@ -41,7 +41,7 @@ export class Replace {
    * });
    * </pre>
    */
-  public static replace(
+  public static async replace(
     conn: Connection,
     pars: {
       data: {};
@@ -49,7 +49,7 @@ export class Replace {
       table: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let data = pars.data;
     if (!data) {
@@ -61,42 +61,34 @@ export class Replace {
       return Promise.reject(new Error(`pars.table can not be null or empty!`));
     }
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let tableSchemaModel = schemaModel.getTableSchemaModel(table);
+    const schemaModel = await Schema.getSchema(conn, database);
 
-        if (!tableSchemaModel) {
-          reject(new Error(`Table '${table}' is not exists!`));
-          return;
-        }
+    let tableSchemaModel = schemaModel?.getTableSchemaModel(table);
 
-        let tableName = Utils.getDbObjectName(database, table);
+    if (!tableSchemaModel) {
+      return Promise.reject(new Error(`Table '${table}' is not exists!`));
+    }
 
-        let sql = `replace into ${tableName} set ?`;
+    let tableName = Utils.getDbObjectName(database, table);
 
-        let fieldValues = {};
+    let sql = `replace into ${tableName} set ?`;
 
-        Reflect.ownKeys(data).map((key, index) => {
-          let column = tableSchemaModel.columns.filter(
-            column => column.columnName === key.toString()
-          )[0];
-          if (column) {
-            Reflect.set(
-              fieldValues,
-              column.columnName,
-              Reflect.get(data, column.columnName)
-            );
-          }
-        });
+    let fieldValues = {};
 
-        conn.query(sql, fieldValues, (err2, result) => {
-          if (err2) {
-            reject(err2);
-          } else {
-            resolve();
-          }
-        });
-      });
+    Reflect.ownKeys(data).map((key, index) => {
+      let column = tableSchemaModel.columns.filter(
+        column => column.columnName === key.toString()
+      )[0];
+      if (column) {
+        Reflect.set(
+          fieldValues,
+          column.columnName,
+          Reflect.get(data, column.columnName)
+        );
+      }
     });
+
+    const [] = await conn.query(sql, fieldValues);
+    return true;
   }
 }

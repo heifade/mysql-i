@@ -18,4 +18,9 @@ export class SplitPageResultModel {
    * @memberof SplitPageResultModel
    */
   public count: number;
+
+  constructor() {
+    this.list = [];
+    this.count = 0;
+  }
 }

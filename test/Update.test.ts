@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { PoolConnection, Connection } from "mysql";
+import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Update, Select } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
@@ -62,7 +62,7 @@ describe("Update", function() {
 
   it("when pars.data is null of update", async () => {
     await Update.update(conn, {
-      data: null,
+      data: null as any,
       table: tableName
     })
       .then(() => {
@@ -75,7 +75,7 @@ describe("Update", function() {
 
   it("when pars.data is null of updateByWhere", async () => {
     await Update.updateByWhere(conn, {
-      data: null,
+      data: null as any,
       table: tableName
     })
       .then(() => {
@@ -91,7 +91,7 @@ describe("Update", function() {
 
     await Update.update(conn, {
       data: { value: insertValue },
-      table: null
+      table: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题
@@ -106,7 +106,7 @@ describe("Update", function() {
 
     await Update.updateByWhere(conn, {
       data: { value: insertValue },
-      table: null
+      table: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题

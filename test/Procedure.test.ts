@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
-import { PoolConnection, Connection } from "mysql";
+import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Select, Procedure, Exec, Schema } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
 
@@ -42,7 +42,7 @@ describe("Procedure", function() {
           END
         `
     );
-    Schema.clear(conn.config.database);
+    Schema.clear(conn.config.database!);
   });
   after(async () => {
     await ConnectionHelper.close(conn);
@@ -65,7 +65,7 @@ describe("Procedure", function() {
   it("when pars.procedure is null", async () => {
     await Procedure.exec(conn, {
       data: { pId: 11, pValue: "111111", pOut: "" },
-      procedure: null
+      procedure: null as any
     })
       .then(() => {
         expect(true).to.be.false; // 进到这里就有问题

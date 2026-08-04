@@ -1,6 +1,5 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { SaveType } from "./model/SaveType";
-import { Schema } from "./schema/Schema";
 import { Insert } from "./Insert";
 import { Update } from "./Update";
 import { Delete } from "./Delete";
@@ -185,7 +184,7 @@ export class Save {
           await Transaction.begin(conn);
           await Save.saves(conn, list);
           await Transaction.commit(conn);
-          resolve();
+          resolve(true);
         } catch (err) {
           await Transaction.rollback(conn);
           reject(err);

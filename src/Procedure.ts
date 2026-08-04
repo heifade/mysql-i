@@ -1,7 +1,6 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Schema } from "./schema/Schema";
 import { Utils } from "./util/Utils";
-import { Select } from "./Select";
 
 /**
  * 存储过程
@@ -23,7 +22,7 @@ export class Procedure {
    * @returns Promise对象
    * @memberof Procedure
    */
-  public static exec(
+  public static async exec(
     conn: Connection,
     pars: {
       data?: {};
@@ -31,7 +30,7 @@ export class Procedure {
       procedure: string;
     }
   ) {
-    let database = pars.database || conn.config.database;
+    let database = (pars.database || conn.config.database)!;
 
     let procedure = pars.procedure;
     if (!procedure) {
@@ -41,49 +40,41 @@ export class Procedure {
     }
     let data = pars.data;
 
-    return new Promise((resolve, reject) => {
-      Schema.getSchema(conn, database).then(schemaModel => {
-        let procedureSchemaModel = schemaModel.getProcedureSchemaModel(
-          procedure
-        );
-        if (!procedureSchemaModel) {
-          reject(new Error(`Procedure '${procedure}' is not exists!`));
-          return;
-        }
+    const schemaModel = await Schema.getSchema(conn, database);
 
-        let procedureName = Utils.getDbObjectName(database, procedure);
+    let procedureSchemaModel = schemaModel!.getProcedureSchemaModel(
+      procedure
+    );
+    if (!procedureSchemaModel) {
+      return Promise.reject(new Error(`Procedure '${procedure}' is not exists!`));
+    }
 
-        let parList = new Array();
-        let parSQL = "";
+    let procedureName = Utils.getDbObjectName(database, procedure);
 
-        if (data) {
-          Reflect.ownKeys(data).map((key, index) => {
-            let par = procedureSchemaModel.pars.filter(
-              par => par.name === key.toString()
-            )[0];
+    let parList = new Array();
+    let parSQL = "";
 
-            if (par) {
-              if (par.parameterMode === "out") {
-                parSQL += `@${par.name},`;
-              } else {
-                parSQL += "?,";
-                parList.push(Reflect.get(data, par.name));
-              }
-            }
-          });
-          parSQL = parSQL.replace(/\,$/, "");
-        }
+    if (data) {
+      Reflect.ownKeys(data).map((key, index) => {
+        let par = procedureSchemaModel.pars.filter(
+          par => par.name === key.toString()
+        )[0];
 
-        let sql = `call ${procedureName}(${parSQL})`;
-
-        conn.query(sql, parList, (err, results, fields) => {
-          if (err) {
-            reject(err);
+        if (par) {
+          if (par.parameterMode === "out") {
+            parSQL += `@${par.name},`;
           } else {
-            resolve(results);
+            parSQL += "?,";
+            parList.push(Reflect.get(data, par.name));
           }
-        });
+        }
       });
-    });
+      parSQL = parSQL.replace(/\,$/, "");
+    }
+
+    let sql = `call ${procedureName}(${parSQL})`;
+
+    const [results] = await conn.query(sql, parList);
+    return results;
   }
 }

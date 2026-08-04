@@ -1,4 +1,4 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 import { Transaction } from "./Transaction";
 
 /**
@@ -36,16 +36,9 @@ export class Exec {
    * );
    * </pre>
    */
-  public static exec(conn: Connection, sql: string) {
-    return new Promise((resolve, reject) => {
-      conn.query(sql, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  public static async exec(conn: Connection, sql: string) {
+    const [] = await conn.query(sql);
+    return true;
   }
 
   /**
@@ -74,7 +67,7 @@ export class Exec {
     let promiseList = new Array<Promise<{}>>();
 
     sqls.map(sql => {
-      promiseList.push(Exec.exec(conn, sql));
+      promiseList.push(Exec.exec(conn, sql) as any);
     });
 
     return Promise.all(promiseList);

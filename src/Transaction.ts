@@ -1,4 +1,4 @@
-import { Connection } from "mysql";
+import { Connection } from "mysql2/promise";
 
 /**
  * 事务
@@ -39,16 +39,8 @@ export class Transaction {
    * @returns
    * @memberof Transaction
    */
-  public static begin(conn: Connection) {
-    return new Promise((resolve, reject) => {
-      conn.beginTransaction(err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  public static async begin(conn: Connection) {
+    await conn.beginTransaction();
   }
 
   /**
@@ -59,16 +51,9 @@ export class Transaction {
    * @returns
    * @memberof Transaction
    */
-  public static commit(conn: Connection) {
-    return new Promise((resolve, reject) => {
-      conn.commit(err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  public static async commit(conn: Connection) {
+    await conn.commit();
+    return true;
   }
 
   /**
@@ -79,15 +64,8 @@ export class Transaction {
    * @returns
    * @memberof Transaction
    */
-  public static rollback(conn: Connection) {
-    return new Promise((resolve, reject) => {
-      conn.rollback(err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  public static async rollback(conn: Connection) {
+    await conn.rollback();
+    return true;
   }
 }
