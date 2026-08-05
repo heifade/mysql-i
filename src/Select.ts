@@ -4,10 +4,7 @@ import { SplitPageParamsModel } from "./model/SplitPageParamsModel";
 import { SplitPageResultModel } from "./model/SplitPageResultModel";
 
 const readListFromResult = (result: any) => {
-  return result.map((h: any) => {
-    const item = {};
-    return Object.assign(item, h);
-  });
+  return result;
 };
 
 /**
@@ -41,12 +38,8 @@ export class Select {
    * </pre>
    */
   public static async select(conn: Connection, param: SelectParamsModel) {
-    try {
-      const [results, fields] = await conn.query(param.sql, param.where);
-      return readListFromResult(results);
-    } catch (err) {
-      throw err;
-    }
+    const [results] = await conn.query(param.sql, param.where);
+    return readListFromResult(results);
   }
 
   /**
@@ -76,18 +69,8 @@ export class Select {
    * </pre>
    */
   public static selects(conn: Connection, params: SelectParamsModel[]) {
-    return new Promise<any[][]>((resolve, reject) => {
-      const promises = new Array<Promise<{}[]>>();
-
-      params.map(param => {
-        const p = Select.select(conn, param);
-        promises.push(p);
-      });
-
-      Promise.all(promises).then(list => {
-        resolve(list);
-      });
-    });
+    const promises = params.map(param => Select.select(conn, param));
+    return Promise.all(promises);
   }
 
   /**
@@ -112,7 +95,7 @@ export class Select {
    * </pre>
    */
   public static async selectTop1(conn: Connection, param: SelectParamsModel) {
-    const [results, fields] = await conn.query(param.sql, param.where);
+    const [results] = await conn.query(param.sql, param.where);
     const list = readListFromResult(results);
     return (list[0] || null);
   }
@@ -138,7 +121,7 @@ export class Select {
    */
   public static async selectCount(conn: Connection, param: SelectParamsModel) {
     const countSql = `select count(*) as value from (${param.sql}) tCount`;
-    const [results, fields] = await conn.query(countSql, param.where);
+    const [results] = await conn.query(countSql, param.where);
     const list = readListFromResult(results);
     const row = list[0];
     return row.value;
@@ -167,6 +150,10 @@ export class Select {
    * </pre>
    */
   public static async selectSplitPage(conn: Connection, param: SplitPageParamsModel) {
+
+    if (!param.pageSize || param.pageSize < 1 || !Number.isInteger(param.pageSize)) {
+      throw new Error(`param.pageSize must be a positive integer, got: ${param.pageSize}`);
+    }
 
     const countPromise = Select.selectCount(conn, param);
     const index = param.index < 1 ? 1 : param.index;

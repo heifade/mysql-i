@@ -85,7 +85,7 @@ export class Delete {
     }
     for (const column of primaryKeyList) {
       if (Reflect.has(data, column.columnName)) {
-        whereSQL += ` ${column.columnName}=? and`;
+        whereSQL += ` ${Utils.escapeIdentifier(column.columnName)}=? and`;
         whereList.push(Reflect.get(data, column.columnName));
       } else {
         throw new Error(`Key ${column.columnName} is not provided!`);
@@ -150,7 +150,7 @@ export class Delete {
   public static async deleteByWhere(
     conn: Connection,
     pars: {
-      where?: {};
+      where: {};
       database?: string;
       table: string;
     }
@@ -171,6 +171,10 @@ export class Delete {
     }
 
     const { whereSQL, whereList } = Where.getWhereSQL(where, tableSchemaModel);
+
+    if (!whereSQL) {
+      throw new Error(`Delete.deleteByWhere: no valid where conditions produced. This would delete all rows from table '${table}'. If you intend to delete all rows, use Exec.exec with 'DELETE FROM ${table}' explicitly.`);
+    }
 
     const tableName = Utils.getDbObjectName(database, table);
 

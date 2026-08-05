@@ -83,48 +83,50 @@ export class Update {
 
     let fieldSQL = ` `;
     let whereSQL = ``;
-    Reflect.ownKeys(data).map((key, index) => {
+    const handledColumns = new Set<string>();
+    Reflect.ownKeys(data).map((key) => {
+      const k = key.toString();
       const column = tableSchemaModel.columns.filter(
-        column => column.columnName === key.toString()
+        column => column.columnName === k
       )[0];
       if (column) {
+        handledColumns.add(k);
         if (column.primaryKey) {
-          whereSQL += ` ${column.columnName}=? and`;
+          whereSQL += ` ${Utils.escapeIdentifier(column.columnName)}=? and`;
           whereList.push(Reflect.get(data, column.columnName));
         } else {
-          fieldSQL += ` ${column.columnName}=?,`;
+          fieldSQL += ` ${Utils.escapeIdentifier(column.columnName)}=?,`;
 
           let value = Reflect.get(data, column.columnName);
-          if (column.columnName === 'updateDate' && !value) {
-            value = new Date();
+          if (column.columnName === 'updateDate' && value == null) {
+            value = pars.saveDate || new Date();
           }
-          if (column.columnName === 'updateBy' && !value) {
+          if (column.columnName === 'updateBy' && value == null) {
             value = pars.saveBy;
           }
           dataList.push(value);
         }
       }
     });
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
-      if (!Reflect.get(data, "updateDate")) {
-        fieldSQL += ` updateDate=?,`;
-        if (pars.saveDate) {
-          dataList.push(pars.saveDate);
-        } else {
-          dataList.push(new Date());
-        }
+    if (!handledColumns.has('updateDate') && tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
+      fieldSQL += ` ${Utils.escapeIdentifier('updateDate')}=?,`;
+      if (pars.saveDate) {
+        dataList.push(pars.saveDate);
+      } else {
+        dataList.push(new Date());
       }
     }
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
-      if (!Reflect.get(data, "updateBy")) {
-        if (pars.saveBy) {
-          fieldSQL += ` updateBy=?,`;
-          dataList.push(pars.saveBy);
-        }
+    if (!handledColumns.has('updateBy') && tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
+      if (pars.saveBy) {
+        fieldSQL += ` ${Utils.escapeIdentifier('updateBy')}=?,`;
+        dataList.push(pars.saveBy);
       }
     }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
+    if (!fieldSQL) {
+      throw new Error(`Update.update: no fields to update for table '${table}'.`);
+    }
     if (whereSQL) {
       whereSQL = ` where ` + whereSQL.replace(/and$/, "");
     }
@@ -189,16 +191,19 @@ export class Update {
     let dataList = new Array<any>();
 
     let fieldSQL = ` `;
-    Reflect.ownKeys(data).map((key, index) => {
+    const handledColumns = new Set<string>();
+    Reflect.ownKeys(data).map((key) => {
+      const k = key.toString();
       const column = tableSchemaModel.columns.filter(
-        column => column.columnName === key.toString()
+        column => column.columnName === k
       )[0];
       if (column) {
-        fieldSQL += ` ${column.columnName}=?,`;
+        handledColumns.add(k);
+        fieldSQL += ` ${Utils.escapeIdentifier(column.columnName)}=?,`;
 
         let value = Reflect.get(data, column.columnName);
         if (column.columnName === 'updateDate' && !value) {
-          value = new Date();
+          value = pars.saveDate || new Date();
         }
         if (column.columnName === 'updateBy' && !value) {
           value = pars.saveBy;
@@ -206,21 +211,34 @@ export class Update {
         dataList.push(value);
       }
     });
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
-      fieldSQL += ` updateDate=?,`;
-      dataList.push(new Date());
+    if (!handledColumns.has('updateDate') && tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
+      fieldSQL += ` ${Utils.escapeIdentifier('updateDate')}=?,`;
+      if (pars.saveDate) {
+        dataList.push(pars.saveDate);
+      } else {
+        dataList.push(new Date());
+      }
     }
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy') && !Reflect.get(data, "updateBy")) {
-      fieldSQL += ` updateBy=?,`;
-      dataList.push(pars.saveBy);
+    if (!handledColumns.has('updateBy') && tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
+      if (pars.saveBy) {
+        fieldSQL += ` ${Utils.escapeIdentifier('updateBy')}=?,`;
+        dataList.push(pars.saveBy);
+      }
     }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
+    if (!fieldSQL) {
+      throw new Error(`Update.updateByWhere: no fields to update for table '${table}'.`);
+    }
 
     const { whereSQL, whereList } = Where.getWhereSQL(
       where,
       tableSchemaModel
     );
+
+    if (!whereSQL) {
+      throw new Error(`Update.updateByWhere: no valid where conditions produced. This would update all rows in table '${table}'.`);
+    }
 
     dataList = dataList.concat(whereList);
 

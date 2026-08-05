@@ -8,6 +8,8 @@ import { GlobalCache } from "./global/GlobalCache";
  * @class ConnectionPool
  */
 export class ConnectionPool {
+  private static _initMutex: Promise<void> = Promise.resolve();
+
   /**
    * 初始化数据库连接池
    *
@@ -26,13 +28,23 @@ export class ConnectionPool {
    * @memberof ConnectionPool
    */
   public static async init(poolConfig: PoolOptions) {
-    const connPool = ConnectionPool.getPool();
-    if (connPool) {
-      await connPool.end();
-    }
+    // 串行化 init 调用，防止并发调用导致连接池泄漏
+    const prev = ConnectionPool._initMutex;
+    let releaseMutex: () => void;
+    ConnectionPool._initMutex = new Promise<void>(r => { releaseMutex = r; });
+    await prev;
 
-    const newPool = createPool(poolConfig);
-    GlobalCache.set("connPool", newPool);
+    try {
+      const connPool = ConnectionPool.getPool();
+      if (connPool) {
+        await connPool.end();
+      }
+
+      const newPool = createPool(poolConfig);
+      GlobalCache.set("connPool", newPool);
+    } finally {
+      releaseMutex!();
+    }
   }
   /**
    * 关闭连接池
@@ -42,16 +54,26 @@ export class ConnectionPool {
    * @memberof ConnectionPool
    */
   public static async closePool() {
-    if (!ConnectionPool.getPool()) {
-      return;
+    // 串行化，防止与 init 或其他 closePool 并发冲突
+    const prev = ConnectionPool._initMutex;
+    let releaseMutex: () => void;
+    ConnectionPool._initMutex = new Promise<void>(r => { releaseMutex = r; });
+    await prev;
+
+    try {
+      const pool = ConnectionPool.getPool();
+      if (!pool) {
+        return;
+      }
+      await pool.end();
+      GlobalCache.set("connPool", null);
+    } finally {
+      releaseMutex!();
     }
-    const pool = ConnectionPool.getPool();
-    await pool.end();
-    GlobalCache.set("connPool", null);
   }
 
-  private static getPool(): Pool {
-    return GlobalCache.get("connPool");
+  private static getPool(): Pool | null {
+    return GlobalCache.get("connPool") || null;
   }
 
   /**
@@ -63,6 +85,9 @@ export class ConnectionPool {
    */
   public static async getConnection() {
     const pool = ConnectionPool.getPool();
+    if (!pool) {
+      throw new Error("ConnectionPool.getConnection: connection pool has not been initialized. Please call ConnectionPool.init() first.");
+    }
     return pool.getConnection();
   }
 

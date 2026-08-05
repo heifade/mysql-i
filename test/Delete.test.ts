@@ -176,7 +176,7 @@ describe("Delete", function () {
 
   it("when error", async () => {
     await Delete.deleteByWhere(conn, {
-      where: { id: "@#$%" },
+      where: { id: "@#$%99999" },
       table: tableName
     })
       // .then(() => {
@@ -187,7 +187,7 @@ describe("Delete", function () {
       });
 
     await Delete.delete(conn, {
-      data: { id: "@#$%" },
+      data: { id: "@#$%-----" },
       table: tableName
     })
       // .then(() => {
@@ -213,9 +213,10 @@ describe("Delete", function () {
     expect(rowData.length).to.be.equal(1);
 
     await Delete.deleteByWhere(conn, {
-      // where: {},
+      where: { id: 1 },
       table: 'tbl_test_delete2'
     });
+
 
     rowData = await Select.select(conn, {
       sql: `select value from tbl_test_delete2 where id=?`,

@@ -130,7 +130,7 @@ export class Exec {
       await Transaction.commit(conn);
       return Promise.resolve();
     } catch (err) {
-      await Transaction.rollback(conn);
+      try { await Transaction.rollback(conn); } catch { /* 忽略 rollback 错误，保留原始异常 */ }
       return Promise.reject(err);
     }
   }

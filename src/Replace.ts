@@ -77,10 +77,9 @@ export class Replace {
 
     const fieldValues = {};
 
-    Reflect.ownKeys(data).map((key, index) => {
-      const column = tableSchemaModel.columns.filter(
-        column => column.columnName === key.toString()
-      )[0];
+    Reflect.ownKeys(data).map((key) => {
+      const k = key.toString();
+      const column = tableSchemaModel.columns.find(column => column.columnName === k);
       if (column) {
         Reflect.set(
           fieldValues,
@@ -90,7 +89,40 @@ export class Replace {
       }
     });
 
-    const [] = await conn.query(sql, fieldValues);
+    if (tableSchemaModel.columns.find(n => n.columnName === 'createDate')) {
+      if (!Reflect.get(fieldValues, "createDate")) {
+        if (pars.saveDate) {
+          Reflect.set(fieldValues, 'createDate', pars.saveDate);
+        } else {
+          Reflect.set(fieldValues, 'createDate', new Date());
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
+      if (!Reflect.get(fieldValues, "updateDate")) {
+        if (pars.saveDate) {
+          Reflect.set(fieldValues, 'updateDate', pars.saveDate);
+        } else {
+          Reflect.set(fieldValues, 'updateDate', new Date());
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'createBy')) {
+      if (!Reflect.get(fieldValues, "createBy")) {
+        if (pars.saveBy) {
+          Reflect.set(fieldValues, 'createBy', pars.saveBy);
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
+      if (!Reflect.get(fieldValues, "updateBy")) {
+        if (pars.saveBy) {
+          Reflect.set(fieldValues, 'updateBy', pars.saveBy);
+        }
+      }
+    }
+
+    await conn.query(sql, fieldValues);
     return true;
   }
 }

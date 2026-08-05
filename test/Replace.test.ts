@@ -89,7 +89,7 @@ describe("Replace", function() {
         expect(true).to.be.false; // 进到这里就有问题
       })
       .catch(err => {
-        expect(err.code).to.be.equal("ER_PARSE_ERROR");
+        expect(err.code).to.be.equal("ER_NO_DEFAULT_FOR_FIELD");
       });
   });
 });

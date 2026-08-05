@@ -1,4 +1,5 @@
 import { TableSchemaModel } from "../model/SchemaModel";
+import { Utils } from "./Utils";
 
 /**
  * 条件
@@ -21,13 +22,14 @@ export class Where {
     const whereList = new Array<any>();
 
     if (where != null) {
-      Reflect.ownKeys(where).map((key, index) => {
+      Reflect.ownKeys(where).map((key) => {
         const k = key.toString();
+        
         if (
           tableSchemaModel.columns.filter(column => column.columnName === k)
             .length
         ) {
-          whereSQL += ` ${k} = ? and`;
+          whereSQL += ` ${Utils.escapeIdentifier(k)} = ? and`;
           whereList.push(Reflect.get(where, k));
         }
       });

@@ -112,6 +112,9 @@ export class Save {
           saveBy: pars.saveBy,
         });
       }
+      default: {
+        throw new Error(`Save.save: unknown saveType '${pars.saveType}'. Expected one of: insert(${SaveType.insert}), update(${SaveType.update}), delete(${SaveType.delete}), replace(${SaveType.replace}).`);
+      }
     }
   }
 
@@ -205,7 +208,10 @@ export class Save {
           await Transaction.commit(conn);
           resolve(true);
         } catch (err) {
-          await Transaction.rollback(conn);
+          try {
+            await Transaction.rollback(conn);
+          }
+          catch { /* 忽略 rollback 错误，保留原始异常 */ }
           reject(err);
         }
       })();
@@ -294,7 +300,10 @@ export class Save {
       await Transaction.commit(conn);
       return Promise.resolve();
     } catch (err) {
-      await Transaction.rollback(conn);
+      try {
+        await Transaction.rollback(conn);
+      }
+      catch { /* 忽略 rollback 错误，保留原始异常 */ }
       return Promise.reject(err);
     }
   }

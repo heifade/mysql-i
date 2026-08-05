@@ -42,7 +42,7 @@ export class Procedure {
 
     const schemaModel = await Schema.getSchema(conn, database);
 
-    const procedureSchemaModel = schemaModel!.getProcedureSchemaModel(
+    const procedureSchemaModel = schemaModel.getProcedureSchemaModel(
       procedure
     );
     if (!procedureSchemaModel) {
@@ -53,16 +53,20 @@ export class Procedure {
 
     const parList = new Array();
     let parSQL = "";
+    const outParams: string[] = [];
 
     if (data) {
-      Reflect.ownKeys(data).map((key, index) => {
-        const par = procedureSchemaModel.pars.filter(
-          par => par.name === key.toString()
-        )[0];
+      Reflect.ownKeys(data).map((key) => {
+        const k = key.toString();
+        const par = procedureSchemaModel.pars.find(
+          par => par.name === k
+        );
 
         if (par) {
           if (par.parameterMode === "out") {
-            parSQL += `@${par.name},`;
+            const escapedName = Utils.escapeIdentifier(par.name);
+            parSQL += `@${escapedName},`;
+            outParams.push(`@${escapedName} AS ${escapedName}`);
           } else {
             parSQL += "?,";
             parList.push(Reflect.get(data, par.name));
@@ -75,6 +79,18 @@ export class Procedure {
     const sql = `call ${procedureName}(${parSQL})`;
 
     const [results] = await conn.query(sql, parList);
+
+    // 如果有 OUT 参数，查询 OUT 参数的值并合并到结果中
+    if (outParams.length > 0) {
+      const selectOutSQL = `SELECT ${outParams.join(", ")}`;
+      const [outResults] = await conn.query(selectOutSQL);
+      const outValues = (outResults as any[])[0];
+      return {
+        results,
+        outValues
+      };
+    }
+
     return results;
   }
 }

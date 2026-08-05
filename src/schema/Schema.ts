@@ -114,7 +114,7 @@ export class Schema {
       const tableList = lists[0];
       const columnList = lists[1];
       schemaModel.tables = new Array<TableSchemaModel>();
-      tableList.map(table => {
+      tableList.map((table: any) => {
         const tableModel = new TableSchemaModel();
         tableModel.name = Reflect.get(table, "tableName");
         tableModel.columns = [];
@@ -122,11 +122,11 @@ export class Schema {
 
         columnList
           .filter(
-            column =>
+            (column: any) =>
               Reflect.get(column, "tableName") ===
               Reflect.get(table, "tableName")
           )
-          .map(column => {
+          .map((column: any) => {
             const columnModel = new ColumnSchemaModel();
             columnModel.columnName = Reflect.get(column, "columnName");
             columnModel.primaryKey =
@@ -138,7 +138,7 @@ export class Schema {
       const procedureList = lists[2];
       const procedureParsList = lists[3];
       schemaModel.procedures = new Array<ProcedureSchemaModel>();
-      procedureList.map(procedure => {
+      procedureList.map((procedure: any) => {
         const procedureModel = new ProcedureSchemaModel();
         procedureModel.name = Reflect.get(procedure, "procedureName");
         procedureModel.pars = [];
@@ -146,11 +146,11 @@ export class Schema {
 
         procedureParsList
           .filter(
-            par =>
+            (par: any) =>
               Reflect.get(par, "procedureName") ===
               Reflect.get(procedure, "procedureName")
           )
-          .map(par => {
+          .map((par: any) => {
             const parModel = new ProcedureParSchemaModel();
             parModel.name = Reflect.get(par, "parameterName");
             parModel.parameterMode = Reflect.get(par, "parameterMode");
