@@ -1,6 +1,6 @@
 {
   "name": "mysql-i",
-  "version": "5.1.8",
+  "version": "5.1.9",
   "description": "mysql interface, base on mysql",
   "main": "./es/index.js",
   "module": "./es/index.js",
