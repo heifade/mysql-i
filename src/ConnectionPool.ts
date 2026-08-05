@@ -103,6 +103,10 @@ export class ConnectionPool {
     if (!conn) {
       return;
     }
-    await conn.release();
+    try {
+      await conn.release();
+    } catch {
+      // 连接已关闭或出错时忽略异常，保证 Promise 始终 resolve
+    }
   }
 }

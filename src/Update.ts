@@ -98,10 +98,10 @@ export class Update {
           fieldSQL += ` ${Utils.escapeIdentifier(column.columnName)}=?,`;
 
           let value = Reflect.get(data, column.columnName);
-          if (column.columnName === 'updateDate' && value == null) {
+          if (column.columnName === 'updateDate' && !value) {
             value = pars.saveDate || new Date();
           }
-          if (column.columnName === 'updateBy' && value == null) {
+          if (column.columnName === 'updateBy' && !value) {
             value = pars.saveBy;
           }
           dataList.push(value);

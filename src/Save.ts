@@ -154,12 +154,9 @@ export class Save {
     list.map(h => {
       promiseList.push(
         Save.save(conn, {
-          data: h.data,
-          database: h.database,
-          table: h.table,
-          saveType: h.saveType,
-          saveDate: pars?.saveDate,
-          saveBy: pars?.saveBy,
+          ...(h as any),
+          saveDate: pars?.saveDate ?? (h as any).saveDate,
+          saveBy: pars?.saveBy ?? (h as any).saveBy,
         })
       );
     });
