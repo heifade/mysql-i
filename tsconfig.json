@@ -1,7 +1,7 @@
 {
   "include": ["./src/**/*"],
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./es/",
     "removeComments": true,
     "types": ["node"],
