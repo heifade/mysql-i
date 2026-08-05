@@ -67,29 +67,54 @@ describe("Update", function() {
   it("update with updateDate must be success", async () => {
 
     await Update.update(conn, {
-      data: { id: 1, vv: null, updateDate: new Date() },
+      data: { id: 1, vv: null, updateDate: new Date(), updateBy: 'djd' },
       table: tableName
     });
 
     let rowData = await Select.selectTop1(conn, {
-      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
       where: [1]
     });
 
     expect(rowData.updateDate).to.equal(getToday());
+    expect(rowData.updateBy).to.equal('djd');
 
 
     await Update.update(conn, {
       data: { id: 1, vv: null, updateDate: '2026-01-01 12:13:00' },
-      table: tableName
+      table: tableName,
     });
-
     rowData = await Select.selectTop1(conn, {
       sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
       where: [1]
     });
-
     expect(rowData.updateDate).to.equal('2026-01-01');
+
+
+    await Update.update(conn, {
+      data: { id: 1, vv: null, updateDate: '2026-01-01 12:13:00', updateBy: 'abc' },
+      table: tableName,
+      saveBy: 'djd'
+    });
+    rowData = await Select.selectTop1(conn, {
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
+      where: [1]
+    });
+    expect(rowData.updateDate).to.equal('2026-01-01');
+    expect(rowData.updateBy).to.equal('abc');
+
+
+    await Update.update(conn, {
+      data: { id: 1, vv: null, updateDate: '2026-01-01 12:13:00', updateBy: null },
+      table: tableName,
+      saveBy: 'djd'
+    });
+    rowData = await Select.selectTop1(conn, {
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
+      where: [1]
+    });
+    expect(rowData.updateDate).to.equal('2026-01-01');
+    expect(rowData.updateBy).to.equal('djd');
 
 
     await Update.update(conn, {
@@ -151,15 +176,53 @@ describe("Update", function() {
       table: tableName,
       where: { id: 2 }
     });
-
     rowData = await Select.selectTop1(conn, {
       sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
       where: [2]
     });
-
     expect(rowData.updateDate).to.equal('2026-01-05');
 
-    
+
+    await Update.updateByWhere(conn, {
+      data: { value: 1, updateDate: '2026-01-05 12:13:00' },
+      table: tableName,
+      where: { id: 2 },
+      saveBy: 'djd'
+    });
+    rowData = await Select.selectTop1(conn, {
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
+      where: [2]
+    });
+    expect(rowData.updateDate).to.equal('2026-01-05');
+    expect(rowData.updateBy).to.equal('djd');
+
+
+    await Update.updateByWhere(conn, {
+      data: { value: 1, updateDate: '2026-01-05 12:13:00', updateBy: 'ddd' },
+      table: tableName,
+      where: { id: 2 },
+      saveBy: 'djd'
+    });
+    rowData = await Select.selectTop1(conn, {
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
+      where: [2]
+    });
+    expect(rowData.updateDate).to.equal('2026-01-05');
+    expect(rowData.updateBy).to.equal('ddd');
+
+
+    await Update.updateByWhere(conn, {
+      data: { value: 1, updateDate: '2026-01-05 12:13:00', updateBy: '' },
+      table: tableName,
+      where: { id: 2 },
+      saveBy: 'djd'
+    });
+    rowData = await Select.selectTop1(conn, {
+      sql: `select *, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, updateBy from ${tableName} where id=?`,
+      where: [2]
+    });
+    expect(rowData.updateDate).to.equal('2026-01-05');
+    expect(rowData.updateBy).to.equal('djd');
   });
 
 

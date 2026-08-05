@@ -47,6 +47,8 @@ export class Replace {
       data: {};
       database?: string;
       table: string;
+      saveDate?: string;
+      saveBy?: string;
     }
   ) {
     const database = (pars.database || conn.config.database)!;

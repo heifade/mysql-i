@@ -49,6 +49,8 @@ export class Insert {
       data: {};
       database?: string;
       table: string;
+      saveDate?: string;
+      saveBy?: string;
     }
   ) {
     const database = (pars.database || conn.config.database)!;
@@ -83,11 +85,37 @@ export class Insert {
         Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
       }
     });
-    if (tableSchemaModel.columns.find(n => n.columnName === 'createDate') && !Reflect.get(data, "createDate")) {
-      Reflect.set(fieldValues, 'createDate', new Date());
+    if (tableSchemaModel.columns.find(n => n.columnName === 'createDate')) {
+      if (!Reflect.get(fieldValues, "createDate")) {
+        if (pars.saveDate) {
+          Reflect.set(fieldValues, 'createDate', pars.saveDate);
+        } else {
+          Reflect.set(fieldValues, 'createDate', new Date());
+        }
+      }
     }
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
-      Reflect.set(fieldValues, 'updateDate', new Date());
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
+      if (!Reflect.get(fieldValues, "updateDate")) {
+        if (pars.saveDate) {
+          Reflect.set(fieldValues, 'updateDate', pars.saveDate);
+        } else {
+          Reflect.set(fieldValues, 'updateDate', new Date());
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'createBy')) {
+      if (!Reflect.get(fieldValues, "createBy")) {
+        if (pars.saveBy) {
+          Reflect.set(fieldValues, 'createBy', pars.saveBy);
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
+      if (!Reflect.get(fieldValues, "updateBy")) {
+        if (pars.saveBy) {
+          Reflect.set(fieldValues, 'updateBy', pars.saveBy);
+        }
+      }
     }
     const [res2] = await conn.query(sql, fieldValues);
     const res: any = {

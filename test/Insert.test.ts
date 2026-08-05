@@ -55,6 +55,52 @@ describe("Insert", function() {
     expect(rowData.updateDate).to.equal(getToday());
   });
 
+  it("insert must be success with pars.saveDate is not null", async () => {
+    let insertValue = `value${Math.random()}`;
+
+    let result = await Insert.insert(conn, {
+      data: { value: insertValue },
+      table: tableName,
+      saveDate: '2026-01-01 12:12:00',
+      saveBy: 'djd'
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, createBy, updateBy from ${tableName} where id=?`,
+      where: [result.insertId]
+    });
+
+    expect(rowData != null).to.be.true;
+    expect(rowData.value).to.equal(insertValue);
+    expect(rowData.createDate).to.equal('2026-01-01');
+    expect(rowData.updateDate).to.equal('2026-01-01');
+    expect(rowData.createBy).to.equal('djd');
+    expect(rowData.updateBy).to.equal('djd');
+  });
+
+  it("insert must be success with pars.saveDate is not null and createDate is not null and updateDate is not null", async () => {
+    let insertValue = `value${Math.random()}`;
+
+    let result = await Insert.insert(conn, {
+      data: { value: insertValue, createDate: '2026-05-05 10:12:13', updateDate: '2026-05-06 10:12:13', createBy: 'abc', updateBy: 'tyu' },
+      table: tableName,
+      saveDate: '2026-01-01 12:12:00',
+      saveBy: 'djd'
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, createBy, updateBy from ${tableName} where id=?`,
+      where: [result.insertId]
+    });
+
+    expect(rowData != null).to.be.true;
+    expect(rowData.value).to.equal(insertValue);
+    expect(rowData.createDate).to.equal('2026-05-05');
+    expect(rowData.updateDate).to.equal('2026-05-06');
+    expect(rowData.createBy).to.equal('abc');
+    expect(rowData.updateBy).to.equal('tyu');
+  });
+
   it("insert must be success with createDate is not null or updateDate is not null", async () => {
     let insertValue = `value${Math.random()}`;
 

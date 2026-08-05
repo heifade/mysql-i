@@ -55,6 +55,8 @@ export class Update {
       data: {};
       database?: string;
       table: string;
+      saveDate?: string;
+      saveBy?: string;
     }
   ) {
     const database = (pars.database || conn.config.database)!;
@@ -96,13 +98,30 @@ export class Update {
           if (column.columnName === 'updateDate' && !value) {
             value = new Date();
           }
+          if (column.columnName === 'updateBy' && !value) {
+            value = pars.saveBy;
+          }
           dataList.push(value);
         }
       }
     });
-    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
-      fieldSQL += ` updateDate=?,`;
-      dataList.push(new Date());
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate')) {
+      if (!Reflect.get(data, "updateDate")) {
+        fieldSQL += ` updateDate=?,`;
+        if (pars.saveDate) {
+          dataList.push(pars.saveDate);
+        } else {
+          dataList.push(new Date());
+        }
+      }
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy')) {
+      if (!Reflect.get(data, "updateBy")) {
+        if (pars.saveBy) {
+          fieldSQL += ` updateBy=?,`;
+          dataList.push(pars.saveBy);
+        }
+      }
     }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
@@ -141,6 +160,8 @@ export class Update {
       where?: {};
       database?: string;
       table: string;
+      saveDate?: string;
+      saveBy?: string;
     }
   ) {
     const database = (pars.database || conn.config.database)!;
@@ -179,12 +200,19 @@ export class Update {
         if (column.columnName === 'updateDate' && !value) {
           value = new Date();
         }
+        if (column.columnName === 'updateBy' && !value) {
+          value = pars.saveBy;
+        }
         dataList.push(value);
       }
     });
     if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
       fieldSQL += ` updateDate=?,`;
       dataList.push(new Date());
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateBy') && !Reflect.get(data, "updateBy")) {
+      fieldSQL += ` updateBy=?,`;
+      dataList.push(pars.saveBy);
     }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','

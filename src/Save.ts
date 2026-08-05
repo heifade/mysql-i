@@ -69,6 +69,8 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
+      saveDate?: string;
+      saveBy?: string;
     }
   ) {
     switch (pars.saveType) {
@@ -77,7 +79,9 @@ export class Save {
         return Insert.insert(conn, {
           data: pars.data,
           database: pars.database,
-          table: pars.table
+          table: pars.table,
+          saveDate: pars.saveDate,
+          saveBy: pars.saveBy,
         });
       }
       case SaveType.update: {
@@ -85,7 +89,9 @@ export class Save {
         return Update.update(conn, {
           data: pars.data,
           database: pars.database,
-          table: pars.table
+          table: pars.table,
+          saveDate: pars.saveDate,
+          saveBy: pars.saveBy,
         });
       }
       case SaveType.delete: {
@@ -101,7 +107,9 @@ export class Save {
         return Replace.replace(conn, {
           data: pars.data,
           database: pars.database,
-          table: pars.table
+          table: pars.table,
+          saveDate: pars.saveDate,
+          saveBy: pars.saveBy,
         });
       }
     }
@@ -132,7 +140,11 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-    }>
+    }>,
+    pars?: {
+      saveDate?: string;
+      saveBy?: string;
+    }
   ) {
     const promiseList = new Array<Promise<any>>();
 
@@ -142,7 +154,9 @@ export class Save {
           data: h.data,
           database: h.database,
           table: h.table,
-          saveType: h.saveType
+          saveType: h.saveType,
+          saveDate: pars?.saveDate,
+          saveBy: pars?.saveBy,
         })
       );
     });
@@ -175,13 +189,19 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-    }>
+      saveDate?: string;
+      saveBy?: string;
+    }>,
+    pars?: {
+      saveDate?: string;
+      saveBy?: string;
+    }
   ) {
     return new Promise<boolean>((resolve, reject) => {
-      (async function() {
+      (async function () {
         try {
           await Transaction.begin(conn);
-          await Save.saves(conn, list);
+          await Save.saves(conn, list, pars);
           await Transaction.commit(conn);
           resolve(true);
         } catch (err) {
@@ -216,10 +236,18 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-    }>
+
+    }>,
+    pars?: {
+      saveDate?: string;
+      saveBy?: string;
+    }
   ) {
     for (const item of list) {
-      await Save.save(conn, item);
+      await Save.save(conn, {
+        ...item,
+        ...pars,
+      });
     }
   }
 
@@ -247,13 +275,21 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-    }>
+      saveDate?: string;
+      saveBy?: string;
+    }>,
+    pars?: {
+      saveDate?: string;
+      saveBy?: string;
+    }
   ) {
     try {
       await Transaction.begin(conn);
-
       for (const item of list) {
-        await Save.save(conn, item);
+        await Save.save(conn, {
+          ...item,
+          ...pars,
+        });
       }
       await Transaction.commit(conn);
       return Promise.resolve();
