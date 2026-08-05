@@ -409,6 +409,19 @@ describe("Save", function () {
     expect(rowData.value).to.equal(insertValue);
   });
 
+  it("save with unknown saveType should throw error", async () => {
+    try {
+      await Save.save(conn, {
+        data: { id: 9999, value: "test" },
+        table: tableName,
+        saveType: 99 as any
+      });
+      expect(true).to.be.false;
+    } catch (err: any) {
+      expect(err.message).to.contain("unknown saveType");
+    }
+  });
+
   it("savesSeqWithTran err", async () => {
     let insertValue = `value${Math.random()}`;
 

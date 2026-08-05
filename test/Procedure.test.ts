@@ -42,6 +42,15 @@ describe("Procedure", function() {
           END
         `
     );
+    await Exec.exec(conn, `drop PROCEDURE if exists ${procedureName}_no_par_3`);
+    await Exec.exec(
+      conn,
+      ` CREATE PROCEDURE ${procedureName}_no_par_3()
+          BEGIN
+            insert into tbl_test_procedure(id, value) values(103, '103');
+          END
+        `
+    );
     Schema.clear(conn.config.database!);
   });
   after(async () => {
@@ -121,6 +130,19 @@ describe("Procedure", function() {
     expect(row.value).to.equals("100");
   });
 
+  it("procedure with OUT parameter should return outValues", async () => {
+    let insertValue = `value${Math.random()}`;
+    let result = await Procedure.exec(conn, {
+      data: { pId: 200, pValue: insertValue, pOut: "" },
+      procedure: procedureName
+    }) as any;
+
+    // When OUT parameters exist, result should be { results, outValues }
+    expect(result).to.have.property("results");
+    expect(result).to.have.property("outValues");
+    expect(result.outValues).to.have.property("pOut", "OK1111");
+  });
+
   it("procedure with other par should success", async () => {
     await Procedure.exec(conn, {
       data: { p1: 1 },
@@ -132,5 +154,18 @@ describe("Procedure", function() {
       where: [102]
     });
     expect(row.value).to.equals("102");
+  });
+
+  it("procedure with no data should success", async () => {
+    // When data is undefined, parList is empty — uses a different procedure to avoid PK conflicts
+    await Procedure.exec(conn, {
+      procedure: `${procedureName}_no_par_3`
+    });
+
+    let row = await Select.selectTop1(conn, {
+      sql: `select * from ${tableName} where id=?`,
+      where: [103]
+    });
+    expect(row.value).to.equals("103");
   });
 });

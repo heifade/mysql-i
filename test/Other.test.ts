@@ -57,5 +57,27 @@ describe("Other", function () {
 
     expect(whereSQL3.trim()).to.equal("where `id1` = ? and `id2` = ?");
     expect(whereList3 != null && whereList3.length == 2 && whereList3[0] == 1 && whereList3[1] == 2).to.be.true;
+
+    // Empty object -> no where SQL
+    let { whereSQL: whereSQL4, whereList: whereList4 } = Where.getWhereSQL({}, tableSchemaModel);
+    expect(whereSQL4.trim()).to.equal("");
+    expect(whereList4.length).to.equal(0);
+
+    // All non-matching keys -> no where SQL
+    let { whereSQL: whereSQL5, whereList: whereList5 } = Where.getWhereSQL({ unknown_col1: 1, unknown_col2: 2 }, tableSchemaModel);
+    expect(whereSQL5.trim()).to.equal("");
+    expect(whereList5.length).to.equal(0);
+  });
+
+  it("Where.getWhereSQL with mixed matching and non-matching keys", async () => {
+    const schemaModel = await Schema.getSchema(conn, "test");
+    let tableSchemaModel = schemaModel!.getTableSchemaModel(tableName);
+
+    // Mix of matching and non-matching keys -> only matching keys are used
+    let { whereSQL, whereList } = Where.getWhereSQL({ id1: 1, unknown_col: 999, id2: 2 }, tableSchemaModel);
+    expect(whereSQL.trim()).to.equal("where `id1` = ? and `id2` = ?");
+    expect(whereList.length).to.equal(2);
+    expect(whereList[0]).to.equal(1);
+    expect(whereList[1]).to.equal(2);
   });
 });

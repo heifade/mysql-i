@@ -92,4 +92,42 @@ describe("Replace", function() {
         expect(err.code).to.be.equal("ER_NO_DEFAULT_FOR_FIELD");
       });
   });
+
+  it("replace with explicit date/by fields should use provided values", async () => {
+    // Covers the "false" branches (explicit values skip auto-fill)
+    let result = await Replace.replace(conn, {
+      data: { id: 1, value: 'explicit', createDate: '2026-03-01 10:00:00', updateDate: '2026-03-02 10:00:00', createBy: 'user1', updateBy: 'user2' },
+      table: tableName,
+      saveDate: '2099-01-01 00:00:00',
+      saveBy: 'shouldNotBeUsed'
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, createBy, updateBy from ${tableName} where id=?`,
+      where: [1]
+    });
+    expect(rowData.createDate).to.equal('2026-03-01');
+    expect(rowData.updateDate).to.equal('2026-03-02');
+    expect(rowData.createBy).to.equal('user1');
+    expect(rowData.updateBy).to.equal('user2');
+  });
+
+  it("replace with saveDate and saveBy should auto-fill date/by fields", async () => {
+    // Covers lines 95, 104, 113, 120: auto-fill with saveDate/saveBy when no explicit values provided
+    await Replace.replace(conn, {
+      data: { id: 2, value: 'autoFilled' },
+      table: tableName,
+      saveDate: '2026-07-07 07:00:00',
+      saveBy: 'autoUser'
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate, createBy, updateBy from ${tableName} where id=?`,
+      where: [2]
+    });
+    expect(rowData.createDate).to.equal('2026-07-07');
+    expect(rowData.updateDate).to.equal('2026-07-07');
+    expect(rowData.createBy).to.equal('autoUser');
+    expect(rowData.updateBy).to.equal('autoUser');
+  });
 });

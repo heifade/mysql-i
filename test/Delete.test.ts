@@ -198,6 +198,45 @@ describe("Delete", function () {
       });
   });
 
+  it("deleteByWhere with empty where should throw no-valid-where error", async () => {
+    await Delete.deleteByWhere(conn, {
+      where: {},
+      table: tableName
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("no valid where conditions");
+      });
+  });
+
+  it("deleteByWhere with only non-matching keys should throw no-valid-where error", async () => {
+    await Delete.deleteByWhere(conn, {
+      where: { unknown_col: "xxx" },
+      table: tableName
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("no valid where conditions");
+      });
+  });
+
+  it("deleteByWhere with null where should fallback to empty and throw", async () => {
+    await Delete.deleteByWhere(conn, {
+      where: null as any,
+      table: tableName
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("no valid where conditions");
+      });
+  });
+
   it("when all must be success", async () => {
 
     await Insert.insert(conn, {

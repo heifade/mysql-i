@@ -79,6 +79,13 @@ describe("Select", function() {
       });
   });
 
+  it("selectTop1 with no matching rows should return null", async () => {
+    let result = await Select.selectTop1(conn, {
+      sql: `select * from ${tableName} where id = -99999`
+    });
+    expect(result).to.be.null;
+  });
+
   it("getGUID", async () => {
     let guid = await Select.selectGUID(conn);
     expect(guid !== undefined && guid !== null && guid !== '' && guid.length > 0).to.be.true;
@@ -142,6 +149,44 @@ describe("Select", function() {
       })
       .catch(err => {
         expect(err.code).to.be.equal("ER_NO_SUCH_TABLE");
+      });
+  });
+
+  it("selectSplitPage with invalid pageSize should throw error", async () => {
+    await Select.selectSplitPage(conn, {
+      sql: `select * from ${tableName}`,
+      pageSize: 0,
+      index: 1
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("must be a positive integer");
+      });
+
+    await Select.selectSplitPage(conn, {
+      sql: `select * from ${tableName}`,
+      pageSize: -1,
+      index: 1
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("must be a positive integer");
+      });
+
+    await Select.selectSplitPage(conn, {
+      sql: `select * from ${tableName}`,
+      pageSize: 1.5,
+      index: 1
+    })
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("must be a positive integer");
       });
   });
 });

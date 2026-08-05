@@ -31,4 +31,17 @@ describe("ConnectionPool", function() {
 
     await ConnectionPool.closePool();
   });
+
+  it("getConnection without init should throw error", async () => {
+    // Ensure pool is closed / not initialized
+    await ConnectionPool.closePool();
+
+    await ConnectionPool.getConnection()
+      .then(() => {
+        expect(true).to.be.false;
+      })
+      .catch(err => {
+        expect(err.message).to.contain("has not been initialized");
+      });
+  });
 });
