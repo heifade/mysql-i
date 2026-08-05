@@ -83,7 +83,12 @@ export class Insert {
         Reflect.set(fieldValues, column.columnName, Reflect.get(data, column.columnName));
       }
     });
-
+    if (tableSchemaModel.columns.find(n => n.columnName === 'createDate') && !Reflect.get(data, "createDate")) {
+      Reflect.set(fieldValues, 'createDate', new Date());
+    }
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
+      Reflect.set(fieldValues, 'updateDate', new Date());
+    }
     const [res2] = await conn.query(sql, fieldValues);
     const res: any = {
       insertId: (res2 as any).insertId // 自增值

@@ -4,6 +4,7 @@ import { initTable } from "./DataInit";
 import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Save, Select, SaveType } from "../src/index";
 import { connectionConfig } from "./connectionConfig";
+import { getToday } from "./utils";
 
 describe("Save", function() {
   let tableName = "tbl_test_save";
@@ -27,10 +28,12 @@ describe("Save", function() {
     });
 
     let rowData = await Select.selectTop1(conn, {
-      sql: `select value from ${tableName} where id=?`,
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
       where: [10]
     });
     expect(rowData.value).to.equal(insertValue);
+    expect(rowData.createDate).to.equal(getToday());
+    expect(rowData.updateDate).to.equal(getToday());
 
     insertValue = `value${Math.random()}_new1`;
     await Save.save(conn, {

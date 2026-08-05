@@ -12,7 +12,11 @@ export let initTable = async function(
     `create table ${tableName} (
         id int not null ${autoIncrement ? "auto_increment" : ""} primary key,
         value varchar(50) not null,
-        dateValue datetime
+        dateValue datetime,
+        createDate datetime,
+        updateDate datetime,
+        createBy varchar(50),
+        updateBy varchar(50)
       )`
   );
 

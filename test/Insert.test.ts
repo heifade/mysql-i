@@ -3,7 +3,9 @@ import "mocha";
 import { initTable } from "./DataInit";
 import { PoolConnection, Connection } from "mysql2/promise";
 import { ConnectionHelper, Insert, Select } from "../src/index";
+import { getToday } from "./utils";
 import { connectionConfig } from "./connectionConfig";
+
 
 describe("Insert", function() {
   let tableName = "tbl_test_insert";
@@ -32,6 +34,44 @@ describe("Insert", function() {
 
     expect(rowData != null).to.be.true;
     expect(rowData.value).to.equal(insertValue);
+  });
+
+  it("insert must be success with createDate is null or updateDate is null", async () => {
+    let insertValue = `value${Math.random()}`;
+
+    let result = await Insert.insert(conn, {
+      data: { value: insertValue },
+      table: tableName
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
+      where: [result.insertId]
+    });
+
+    expect(rowData != null).to.be.true;
+    expect(rowData.value).to.equal(insertValue);
+    expect(rowData.createDate).to.equal(getToday());
+    expect(rowData.updateDate).to.equal(getToday());
+  });
+
+  it("insert must be success with createDate is not null or updateDate is not null", async () => {
+    let insertValue = `value${Math.random()}`;
+
+    let result = await Insert.insert(conn, {
+      data: { value: insertValue, createDate: '2026-01-01 12:12:00', updateDate: '2026-01-03 16:16:00' },
+      table: tableName
+    });
+
+    let rowData = await Select.selectTop1(conn, {
+      sql: `select value, DATE_FORMAT(createDate,'%Y-%m-%d') as createDate, DATE_FORMAT(updateDate,'%Y-%m-%d') as updateDate from ${tableName} where id=?`,
+      where: [result.insertId]
+    });
+
+    expect(rowData != null).to.be.true;
+    expect(rowData.value).to.equal(insertValue);
+    expect(rowData.createDate).to.equal('2026-01-01');
+    expect(rowData.updateDate).to.equal('2026-01-03');
   });
 
   it("when pars.data is null", async () => {

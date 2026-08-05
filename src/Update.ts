@@ -92,10 +92,18 @@ export class Update {
         } else {
           fieldSQL += ` ${column.columnName}=?,`;
 
-          dataList.push(Reflect.get(data, column.columnName));
+          let value = Reflect.get(data, column.columnName);
+          if (column.columnName === 'updateDate' && !value) {
+            value = new Date();
+          }
+          dataList.push(value);
         }
       }
     });
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
+      fieldSQL += ` updateDate=?,`;
+      dataList.push(new Date());
+    }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
     if (whereSQL) {
@@ -167,9 +175,17 @@ export class Update {
       if (column) {
         fieldSQL += ` ${column.columnName}=?,`;
 
-        dataList.push(Reflect.get(data, column.columnName));
+        let value = Reflect.get(data, column.columnName);
+        if (column.columnName === 'updateDate' && !value) {
+          value = new Date();
+        }
+        dataList.push(value);
       }
     });
+    if (tableSchemaModel.columns.find(n => n.columnName === 'updateDate') && !Reflect.get(data, "updateDate")) {
+      fieldSQL += ` updateDate=?,`;
+      dataList.push(new Date());
+    }
 
     fieldSQL = fieldSQL.trim().replace(/\,$/, ""); //去掉最后面的','
 

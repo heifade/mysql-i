@@ -1,11 +1,11 @@
-import { Delete, ConnectionHelper, Select, Exec, Schema } from "../src/index";
+import { Delete, ConnectionHelper, Select, Exec, Schema, Insert } from "../src/index";
 import { expect } from "chai";
 import "mocha";
 import { initTable } from "./DataInit";
 import { Connection } from "mysql2/promise";
 import { connectionConfig } from "./connectionConfig";
 
-describe("Delete", function() {
+describe("Delete", function () {
   let tableName = "tbl_test_delete";
   let tableNoPrimaryKey = "tbl_test_noprimarykey";
   let conn: Connection;
@@ -20,6 +20,16 @@ describe("Delete", function() {
           id int,
           value varchar(50),
           dateValue datetime
+        )`
+    );
+
+
+    await Exec.exec(conn, `drop table if exists tbl_test_delete2`);
+    await Exec.exec(
+      conn,
+      `create table tbl_test_delete2 (
+          id int,
+          value varchar(50)
         )`
     );
 
@@ -186,5 +196,32 @@ describe("Delete", function() {
       .catch(err => {
         expect(err.code).to.be.equal("ER_TRUNCATED_WRONG_VALUE");
       });
+  });
+
+  it("when all must be success", async () => {
+
+    await Insert.insert(conn, {
+      data: { id: 1, value: 1 },
+      table: 'tbl_test_delete2'
+    });
+
+    let rowData = await Select.select(conn, {
+      sql: `select value from tbl_test_delete2 where id=?`,
+      where: [1]
+    });
+
+    expect(rowData.length).to.be.equal(1);
+
+    await Delete.deleteByWhere(conn, {
+      // where: {},
+      table: 'tbl_test_delete2'
+    });
+
+    rowData = await Select.select(conn, {
+      sql: `select value from tbl_test_delete2 where id=?`,
+      where: [1]
+    });
+
+    expect(rowData.length).to.be.equal(0);
   });
 });
