@@ -210,7 +210,7 @@ await Save.savesWithTran(conn, list);
 await Save.savesSeqWithTran(conn, list);
 ```
 
-> `saves` / `savesSeq` 也支持传入 `pars: { saveDate, saveBy }` 统一指定自动填充值。
+> `saves` / `savesSeq` 也支持传入 `pars: { saveDate, saveBy }` 统一指定自动填充值（`saveDate` 为 `string | Date`）。
 
 ## 查询
 
@@ -352,8 +352,8 @@ console.log(result.outValues.pId); // 新插入行的 id
 
 | 列名 | 触发时机 | 默认值 | 可被 `saveDate` / `saveBy` 覆盖 |
 |---|---|---|---|
-| `createDate` | INSERT | `new Date()` | ✅ |
-| `updateDate` | INSERT / UPDATE | `new Date()` | ✅ |
+| `createDate` | INSERT | `new Date()` | ✅（`saveDate`，`string | Date`） |
+| `updateDate` | INSERT / UPDATE | `new Date()` | ✅（`saveDate`，`string | Date`） |
 | `createBy` | INSERT | 不填充 | ✅（`saveBy`） |
 | `updateBy` | UPDATE | 不填充 | ✅（`saveBy`） |
 
@@ -361,11 +361,13 @@ console.log(result.outValues.pId); // 新插入行的 id
 await Insert.insert(conn, {
   data: { name: "Alice" },
   table: "tbl_user",
-  saveDate: "2026-01-01 00:00:00", // 覆盖 createDate / updateDate
+  saveDate: "2026-01-01 00:00:00", // 覆盖 createDate / updateDate（也支持 Date 对象）
   saveBy: "admin",                 // 覆盖 createBy / updateBy
 });
 ```
 
+> `saveDate` 支持 `string`（如 `"2026-01-01 00:00:00"`）或 `Date` 对象（如 `new Date()`）。
+>
 > 如果 `data` 中已显式提供了 `createDate` / `updateDate` / `createBy` / `updateBy` 的值，则不会自动覆盖。
 
 ## Schema 缓存

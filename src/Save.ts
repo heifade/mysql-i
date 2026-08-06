@@ -69,7 +69,7 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
@@ -145,7 +145,7 @@ export class Save {
       saveType: SaveType;
     }>,
     pars?: {
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
@@ -189,11 +189,11 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }>,
     pars?: {
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
@@ -242,7 +242,7 @@ export class Save {
 
     }>,
     pars?: {
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
@@ -278,11 +278,11 @@ export class Save {
       database?: string;
       table: string;
       saveType: SaveType;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }>,
     pars?: {
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {

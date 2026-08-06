@@ -47,7 +47,7 @@ export class Replace {
       data: {};
       database?: string;
       table: string;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {

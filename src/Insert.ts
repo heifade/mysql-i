@@ -49,7 +49,7 @@ export class Insert {
       data: {};
       database?: string;
       table: string;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {

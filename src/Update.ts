@@ -55,7 +55,7 @@ export class Update {
       data: {};
       database?: string;
       table: string;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
@@ -162,7 +162,7 @@ export class Update {
       where?: {};
       database?: string;
       table: string;
-      saveDate?: string;
+      saveDate?: string | Date;
       saveBy?: string;
     }
   ) {
