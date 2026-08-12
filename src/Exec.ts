@@ -22,6 +22,7 @@ export class Exec {
    * @static
    * @param {Connection} conn - 数据库连接对象
    * @param {string} sql - SQL语句
+   * @param {any[]} [pars] - SQL参数数组，用于防止SQL注入
    * @returns Promise对象
    * @memberof Exec
    * @example
@@ -34,10 +35,12 @@ export class Exec {
    *      value varchar(50)
    *    )`
    * );
+   * // 使用参数化查询防止SQL注入
+   * await Exec.exec(conn, `insert into tbl2 (value) values (?)`, ['hello']);
    * </pre>
    */
-  public static async exec(conn: Connection, sql: string) {
-    const [] = await conn.query(sql);
+  public static async exec(conn: Connection, sql: string, pars?: any[]) {
+    const [] = await conn.query(sql, pars);
     return true;
   }
 
